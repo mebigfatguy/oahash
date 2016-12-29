@@ -1,5 +1,5 @@
 /*
- * baremetal4j - An open addressing hash implementation for Maps and Sets
+ * oahash - An open addressing hash implementation for Maps and Sets
  * Copyright 2016 MeBigFatGuy.com
  * Copyright 2016 Dave Brosius
  *
@@ -336,7 +336,6 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public void clear() {
 
-
         }
 
     }
@@ -418,7 +417,6 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public void clear() {
 
-
         }
 
     }
@@ -499,7 +497,6 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public void clear() {
-
 
         }
     }
