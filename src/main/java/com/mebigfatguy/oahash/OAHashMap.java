@@ -30,6 +30,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
     private static final int DEFAULT_CAPACITY = 16;
     private static final double DEFAULT_LOAD_FACTOR = 0.70;
+    private static final int MIN_EXPANSION = 10;
 
     private Object[][] table;
     private int size;
@@ -245,8 +246,8 @@ public class OAHashMap<K, V> implements Map<K, V> {
         }
 
         int newLength = (int) (table.length + (table.length * loadFactor));
-        if (newLength <= table.length) {
-            newLength += 5;
+        if (newLength <= (table.length + MIN_EXPANSION)) {
+            newLength += MIN_EXPANSION;
         }
 
         Object[][] oldTable = table;
