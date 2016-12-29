@@ -17,28 +17,61 @@
  */
 package com.mebigfatguy.oahash;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
 public class OAHashSet<E> implements Set<E> {
 
+    private static final Object DELETED = new Object() {
+    };
+
+    private static final int DEFAULT_CAPACITY = 16;
+    private static final double DEFAULT_LOAD_FACTOR = 0.70;
+
+    private Object[] table;
+    private int size;
+    private double loadFactor;
+    private int revision;
+
+    public OAHashSet() {
+        this(DEFAULT_CAPACITY);
+    }
+
+    public OAHashSet(int initialCapacity) {
+        this(initialCapacity, DEFAULT_LOAD_FACTOR);
+    }
+
+    public OAHashSet(int initialCapacity, double initialLoadFactor) {
+
+        if (initialCapacity < 0) {
+            throw new IllegalArgumentException("Initial capacity can not be negative but was " + initialCapacity);
+        }
+
+        if ((initialLoadFactor <= 0) || (initialLoadFactor >= 100)) {
+            throw new IllegalArgumentException("Initial Load Factor must be between 0 and 100 exclusively, but was " + initialLoadFactor);
+        }
+
+        table = new Object[initialCapacity];
+        loadFactor = initialLoadFactor;
+    }
+
     @Override
     public int size() {
-
-        return 0;
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
 
-        return false;
+        return size == 0;
     }
 
     @Override
     public boolean contains(Object o) {
-
-        return false;
+        int foundIndex = find(o);
+        return foundIndex >= 0;
     }
 
     @Override
@@ -62,13 +95,53 @@ public class OAHashSet<E> implements Set<E> {
     @Override
     public boolean add(E e) {
 
-        return false;
+        if (e == null) {
+            throw new IllegalArgumentException("add of null value is not allowed");
+        }
+
+        ++revision;
+        int foundIndex = find(e);
+        if (foundIndex >= 0) {
+            table[foundIndex] = e;
+
+            return false;
+        }
+
+        resizeIfNeeded();
+
+        int start = e.hashCode() % table.length;
+
+        for (int i = start; i < table.length; i++) {
+            if ((table[i] == null) || (table[i] == DELETED)) {
+                table[i] = e;
+                ++size;
+                return true;
+            }
+        }
+
+        for (int i = 0; i < start; i++) {
+            if ((table[i] == null) || (table[i] == DELETED)) {
+                table[i] = e;
+                ++size;
+                return true;
+            }
+        }
+
+        throw new RuntimeException("Unable to add element {" + e + "}");
     }
 
     @Override
     public boolean remove(Object o) {
+        ++revision;
+        int foundIndex = find(o);
 
-        return false;
+        if (foundIndex < 0) {
+            return false;
+        }
+
+        table[foundIndex] = DELETED;
+        --size;
+        return true;
     }
 
     @Override
@@ -97,8 +170,59 @@ public class OAHashSet<E> implements Set<E> {
 
     @Override
     public void clear() {
-
-        
+        ++revision;
+        Arrays.fill(table, null);
     }
 
+    private int find(Object e) {
+        if ((e == null) || (size == 0)) {
+            return -1;
+        }
+
+        int start = e.hashCode() % table.length;
+        for (int i = start; i < table.length; i++) {
+            if (table[i] == null) {
+                return -1;
+            }
+
+            if ((table[i] != DELETED) && e.equals(table[i])) {
+                return i;
+            }
+        }
+
+        for (int i = 0; i < start; i++) {
+            if (table[i] == null) {
+                return -1;
+            }
+
+            if ((table[i] != DELETED) && e.equals(table[i])) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private void resizeIfNeeded() {
+
+        double fillPercentage = 1.0 - ((table.length - size) / ((double) table.length));
+
+        if ((fillPercentage < loadFactor) && (table.length > size)) {
+            return;
+        }
+
+        int newLength = (int) (table.length + (table.length * loadFactor));
+        if (newLength <= table.length) {
+            newLength += 5;
+        }
+
+        Object[] oldTable = table;
+        table = new Object[newLength];
+
+        for (Object element : oldTable) {
+            if ((element != null) && (element != DELETED)) {
+                add((E) element);
+            }
+        }
+    }
 }
