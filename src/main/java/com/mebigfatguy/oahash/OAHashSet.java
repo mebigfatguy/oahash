@@ -204,12 +204,12 @@ public class OAHashSet<E> implements Set<E> {
         throw new RuntimeException("Unable to find insertion point for e;ement {" + e + "}");
     }
 
-    private void resizeIfNeeded() {
+    private boolean resizeIfNeeded() {
 
         double fillPercentage = 1.0 - ((table.length - size) / ((double) table.length));
 
         if ((fillPercentage < loadFactor) && (table.length > size)) {
-            return;
+            return false;
         }
 
         int newLength = (int) (table.length + (table.length * loadFactor));
@@ -225,5 +225,7 @@ public class OAHashSet<E> implements Set<E> {
                 add((E) element);
             }
         }
+
+        return true;
     }
 }

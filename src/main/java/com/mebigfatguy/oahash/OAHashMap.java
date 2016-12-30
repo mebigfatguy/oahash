@@ -237,12 +237,12 @@ public class OAHashMap<K, V> implements Map<K, V> {
         throw new RuntimeException("Unable to find insertion point for key {" + key + "}");
     }
 
-    private void resizeIfNeeded() {
+    private boolean resizeIfNeeded() {
 
         double fillPercentage = 1.0 - ((table.length - size) / ((double) table.length));
 
         if ((fillPercentage < loadFactor) && (table.length > size)) {
-            return;
+            return false;
         }
 
         int newLength = (int) (table.length + (table.length * loadFactor));
@@ -258,6 +258,8 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 put((K) element[0], (V) element[1]);
             }
         }
+
+        return true;
     }
 
     private final class OAKeySet implements Set<K> {
