@@ -567,6 +567,9 @@ public class OAHashMap<K, V> implements Map<K, V> {
             table[tableIndex][0] = DELETED;
             table[tableIndex][1] = null;
             --size;
+
+            ++itRevision;
+            ++revision;
         }
 
         private void findNextSlot() {
@@ -627,6 +630,8 @@ public class OAHashMap<K, V> implements Map<K, V> {
             table[tableIndex][0] = DELETED;
             table[tableIndex][1] = null;
             --size;
+            ++itRevision;
+            ++revision;
         }
 
         private void findNextSlot() {
@@ -687,6 +692,8 @@ public class OAHashMap<K, V> implements Map<K, V> {
             table[tableIndex][0] = DELETED;
             table[tableIndex][1] = null;
             --size;
+            ++itRevision;
+            ++revision;
         }
 
         private void findNextSlot() {

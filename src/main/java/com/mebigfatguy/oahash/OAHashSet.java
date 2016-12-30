@@ -282,6 +282,8 @@ public class OAHashSet<E> implements Set<E> {
 
             table[tableIndex] = DELETED;
             --size;
+            ++itRevision;
+            ++revision;
         }
 
         private void findNextSlot() {
