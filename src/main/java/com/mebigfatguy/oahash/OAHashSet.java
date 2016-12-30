@@ -19,7 +19,9 @@ package com.mebigfatguy.oahash;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 public class OAHashSet<E> implements Set<E> {
@@ -78,7 +80,7 @@ public class OAHashSet<E> implements Set<E> {
     @Override
     public Iterator<E> iterator() {
 
-        return null;
+        return new OAHashSetIterator();
     }
 
     @Override
@@ -233,5 +235,65 @@ public class OAHashSet<E> implements Set<E> {
         }
 
         return true;
+    }
+
+    private final class OAHashSetIterator implements Iterator<E> {
+
+        private int itRevision = revision;
+        private int tableIndex;
+
+        public OAHashSetIterator() {
+            tableIndex = -1;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (itRevision != revision) {
+                throw new ConcurrentModificationException();
+            }
+
+            findNextSlot();
+
+            return tableIndex < table.length;
+        }
+
+        @Override
+        public E next() {
+            if (itRevision != revision) {
+                throw new ConcurrentModificationException();
+            }
+
+            if ((tableIndex < 0) || (tableIndex >= table.length)) {
+                throw new NoSuchElementException();
+            }
+
+            return (E) table[tableIndex];
+        }
+
+        @Override
+        public void remove() {
+            if (itRevision != revision) {
+                throw new ConcurrentModificationException();
+            }
+
+            if ((tableIndex < 0) || (tableIndex >= table.length)) {
+                throw new NoSuchElementException();
+            }
+
+            table[tableIndex] = DELETED;
+            --size;
+        }
+
+        private void findNextSlot() {
+            tableIndex++;
+            while (tableIndex < table.length) {
+                if ((table[tableIndex] != null) && (table[tableIndex] != DELETED)) {
+                    break;
+                }
+
+                tableIndex++;
+            }
+        }
+
     }
 }

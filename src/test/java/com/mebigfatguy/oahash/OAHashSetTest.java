@@ -17,6 +17,7 @@
  */
 package com.mebigfatguy.oahash;
 
+import java.util.Iterator;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -79,6 +80,30 @@ public class OAHashSetTest {
         }
 
         Assert.assertEquals(100, hcs.size());
+    }
+
+    @Test
+    public void testCountingAndDeletingIterator() {
+        for (int i = 0; i < 20; i++) {
+            s.add(String.valueOf(i));
+        }
+
+        int count = 0;
+        Iterator<String> it = s.iterator();
+        while (it.hasNext()) {
+            it.next();
+            count++;
+        }
+
+        Assert.assertEquals(20, s.size());
+
+        it = s.iterator();
+        while (it.hasNext()) {
+            it.next();
+            it.remove();
+        }
+
+        Assert.assertEquals(0, s.size());
     }
 
     static class HashCollisionsButNotEqual {
