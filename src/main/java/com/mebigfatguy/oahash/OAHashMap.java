@@ -215,7 +215,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         for (int i = start; i < table.length; i++) {
             Object tableItem = table[i][0];
             if (tableItem == null) {
-                return -1;
+                return -i - 1;
             }
 
             if ((tableItem != DELETED) && key.equals(tableItem)) {
@@ -226,7 +226,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         for (int i = 0; i < start; i++) {
             Object tableItem = table[i][0];
             if (tableItem == null) {
-                return -1;
+                return -i - 1;
             }
 
             if ((tableItem != DELETED) && key.equals(tableItem)) {
@@ -234,7 +234,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
             }
         }
 
-        return -1;
+        throw new RuntimeException("Unable to find insertion point for key {" + key + "}");
     }
 
     private void resizeIfNeeded() {

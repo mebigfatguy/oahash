@@ -183,7 +183,7 @@ public class OAHashSet<E> implements Set<E> {
         int start = e.hashCode() % table.length;
         for (int i = start; i < table.length; i++) {
             if (table[i] == null) {
-                return -1;
+                return -i - 1;
             }
 
             if ((table[i] != DELETED) && e.equals(table[i])) {
@@ -193,7 +193,7 @@ public class OAHashSet<E> implements Set<E> {
 
         for (int i = 0; i < start; i++) {
             if (table[i] == null) {
-                return -1;
+                return -i - 1;
             }
 
             if ((table[i] != DELETED) && e.equals(table[i])) {
@@ -201,7 +201,7 @@ public class OAHashSet<E> implements Set<E> {
             }
         }
 
-        return -1;
+        throw new RuntimeException("Unable to find insertion point for e;ement {" + e + "}");
     }
 
     private void resizeIfNeeded() {
