@@ -275,19 +275,19 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public int size() {
 
-            return 0;
+            return size;
         }
 
         @Override
         public boolean isEmpty() {
 
-            return false;
+            return size == 0;
         }
 
         @Override
         public boolean contains(Object o) {
 
-            return false;
+            return containsKey(o);
         }
 
         @Override
@@ -311,13 +311,13 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean add(K e) {
 
-            return false;
+            return put(e, null) != null;
         }
 
         @Override
         public boolean remove(Object o) {
 
-            return false;
+            return OAHashMap.this.remove(o) != null;
         }
 
         @Override
@@ -346,7 +346,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public void clear() {
-
+            OAHashMap.this.clear();
         }
 
     }
@@ -356,19 +356,19 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public int size() {
 
-            return 0;
+            return size;
         }
 
         @Override
         public boolean isEmpty() {
 
-            return false;
+            return size == 0;
         }
 
         @Override
         public boolean contains(Object o) {
 
-            return false;
+            return containsValue(o);
         }
 
         @Override
@@ -392,7 +392,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean add(V e) {
 
-            return false;
+            throw new IllegalArgumentException("put of null key (via the values collection) is not allowed {value: " + e + ")");
         }
 
         @Override
@@ -427,7 +427,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public void clear() {
-
+            OAHashMap.this.clear();
         }
 
     }
@@ -437,19 +437,23 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public int size() {
 
-            return 0;
+            return size;
         }
 
         @Override
         public boolean isEmpty() {
 
-            return false;
+            return size == 0;
         }
 
         @Override
         public boolean contains(Object o) {
 
-            return false;
+            if (!(o instanceof Map.Entry)) {
+                return false;
+            }
+
+            return containsKey(((Map.Entry) o).getKey());
         }
 
         @Override
@@ -473,13 +477,17 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean add(java.util.Map.Entry<K, V> e) {
 
-            return false;
+            return put(e.getKey(), e.getValue()) != null;
         }
 
         @Override
         public boolean remove(Object o) {
 
-            return false;
+            if (!(o instanceof Map.Entry)) {
+                return false;
+            }
+
+            return OAHashMap.this.remove(((Map.Entry) o).getKey()) != null;
         }
 
         @Override
@@ -508,7 +516,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public void clear() {
-
+            OAHashMap.this.clear();
         }
     }
 }
