@@ -130,7 +130,13 @@ public class OAHashMap<K, V> implements Map<K, V> {
             return oldValue;
         }
 
-        resizeIfNeeded();
+        if (!resizeIfNeeded()) {
+            foundIndex = -1 - foundIndex;
+            table[foundIndex][0] = key;
+            table[foundIndex][1] = value;
+            ++size;
+            return null;
+        }
 
         int start = key.hashCode() % table.length;
 

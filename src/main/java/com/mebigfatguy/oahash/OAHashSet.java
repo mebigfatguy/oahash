@@ -108,7 +108,12 @@ public class OAHashSet<E> implements Set<E> {
             return false;
         }
 
-        resizeIfNeeded();
+        if (!resizeIfNeeded()) {
+            foundIndex = -1 - foundIndex;
+            table[foundIndex] = e;
+            ++size;
+            return true;
+        }
 
         int start = e.hashCode() % table.length;
 
