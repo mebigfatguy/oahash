@@ -71,4 +71,28 @@ public class OAHashMapTest {
             Assert.assertEquals(s, m.get(s));
         }
     }
+
+    @Test
+    public void testHeavyHashCollisions() {
+        Map<HashCollisionsButNotEqual, HashCollisionsButNotEqual> hcm = new OAHashMap<>();
+
+        for (int i = 0; i < 100; i++) {
+            HashCollisionsButNotEqual hc = new HashCollisionsButNotEqual();
+            hcm.put(hc, hc);
+        }
+
+        Assert.assertEquals(100, hcm.size());
+    }
+
+    static class HashCollisionsButNotEqual {
+        @Override
+        public int hashCode() {
+            return 42;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return this == o;
+        }
+    }
 }

@@ -68,4 +68,28 @@ public class OAHashSetTest {
             Assert.assertTrue(s.contains(o));
         }
     }
+
+    @Test
+    public void testHeavyHashCollisions() {
+        Set<HashCollisionsButNotEqual> hcs = new OAHashSet<>();
+
+        for (int i = 0; i < 100; i++) {
+            HashCollisionsButNotEqual hc = new HashCollisionsButNotEqual();
+            hcs.add(hc);
+        }
+
+        Assert.assertEquals(100, hcs.size());
+    }
+
+    static class HashCollisionsButNotEqual {
+        @Override
+        public int hashCode() {
+            return 42;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return this == o;
+        }
+    }
 }
