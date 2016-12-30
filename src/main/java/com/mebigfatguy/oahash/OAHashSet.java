@@ -181,7 +181,7 @@ public class OAHashSet<E> implements Set<E> {
     }
 
     private int find(Object e) {
-        if ((e == null) || (size == 0)) {
+        if (e == null) {
             return -1;
         }
 

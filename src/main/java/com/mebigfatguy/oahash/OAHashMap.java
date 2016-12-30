@@ -213,7 +213,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
     }
 
     private int find(Object key) {
-        if ((key == null) || (size == 0)) {
+        if (key == null) {
             return -1;
         }
 
