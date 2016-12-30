@@ -19,8 +19,10 @@ package com.mebigfatguy.oahash;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 public class OAHashMap<K, V> implements Map<K, V> {
@@ -292,7 +294,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public Iterator<K> iterator() {
 
-            return null;
+            return new OAHashMapKeySetIterator();
         }
 
         @Override
@@ -373,7 +375,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public Iterator<V> iterator() {
 
-            return null;
+            return new OAHashMapValuesIterator();
         }
 
         @Override
@@ -516,6 +518,218 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public void clear() {
             OAHashMap.this.clear();
+        }
+    }
+
+    private final class OAHashMapKeySetIterator implements Iterator<K> {
+
+        private int itRevision = revision;
+        private int tableIndex;
+
+        public OAHashMapKeySetIterator() {
+            tableIndex = -1;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (itRevision != revision) {
+                throw new ConcurrentModificationException();
+            }
+
+            findNextSlot();
+
+            return tableIndex < table.length;
+        }
+
+        @Override
+        public K next() {
+            if (itRevision != revision) {
+                throw new ConcurrentModificationException();
+            }
+
+            if ((tableIndex < 0) || (tableIndex >= table.length)) {
+                throw new NoSuchElementException();
+            }
+
+            return (K) table[tableIndex][0];
+        }
+
+        @Override
+        public void remove() {
+            if (itRevision != revision) {
+                throw new ConcurrentModificationException();
+            }
+
+            if ((tableIndex < 0) || (tableIndex >= table.length)) {
+                throw new NoSuchElementException();
+            }
+
+            table[tableIndex][0] = DELETED;
+            table[tableIndex][1] = null;
+            --size;
+        }
+
+        private void findNextSlot() {
+            tableIndex++;
+            while (tableIndex < table.length) {
+                if ((table[tableIndex] != null) && (table[tableIndex] != DELETED)) {
+                    break;
+                }
+
+                tableIndex++;
+            }
+        }
+    }
+
+    private final class OAHashMapValuesIterator implements Iterator<V> {
+
+        private int itRevision = revision;
+        private int tableIndex;
+
+        public OAHashMapValuesIterator() {
+            tableIndex = -1;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (itRevision != revision) {
+                throw new ConcurrentModificationException();
+            }
+
+            findNextSlot();
+
+            return tableIndex < table.length;
+        }
+
+        @Override
+        public V next() {
+            if (itRevision != revision) {
+                throw new ConcurrentModificationException();
+            }
+
+            if ((tableIndex < 0) || (tableIndex >= table.length)) {
+                throw new NoSuchElementException();
+            }
+
+            return (V) table[tableIndex][1];
+        }
+
+        @Override
+        public void remove() {
+            if (itRevision != revision) {
+                throw new ConcurrentModificationException();
+            }
+
+            if ((tableIndex < 0) || (tableIndex >= table.length)) {
+                throw new NoSuchElementException();
+            }
+
+            table[tableIndex][0] = DELETED;
+            table[tableIndex][1] = null;
+            --size;
+        }
+
+        private void findNextSlot() {
+            tableIndex++;
+            while (tableIndex < table.length) {
+                if ((table[tableIndex] != null) && (table[tableIndex] != DELETED)) {
+                    break;
+                }
+
+                tableIndex++;
+            }
+        }
+    }
+
+    private final class OAHashMapEntrySetIterator implements Iterator<Map.Entry<K, V>> {
+
+        private int itRevision = revision;
+        private int tableIndex;
+
+        public OAHashMapEntrySetIterator() {
+            tableIndex = -1;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (itRevision != revision) {
+                throw new ConcurrentModificationException();
+            }
+
+            findNextSlot();
+
+            return tableIndex < table.length;
+        }
+
+        @Override
+        public Map.Entry<K, V> next() {
+            if (itRevision != revision) {
+                throw new ConcurrentModificationException();
+            }
+
+            if ((tableIndex < 0) || (tableIndex >= table.length)) {
+                throw new NoSuchElementException();
+            }
+
+            return new OAMapEntry();
+        }
+
+        @Override
+        public void remove() {
+            if (itRevision != revision) {
+                throw new ConcurrentModificationException();
+            }
+
+            if ((tableIndex < 0) || (tableIndex >= table.length)) {
+                throw new NoSuchElementException();
+            }
+
+            table[tableIndex][0] = DELETED;
+            table[tableIndex][1] = null;
+            --size;
+        }
+
+        private void findNextSlot() {
+            tableIndex++;
+            while (tableIndex < table.length) {
+                if ((table[tableIndex] != null) && (table[tableIndex] != DELETED)) {
+                    break;
+                }
+
+                tableIndex++;
+            }
+        }
+
+        private final class OAMapEntry implements Map.Entry<K, V> {
+
+            @Override
+            public K getKey() {
+                if (itRevision != revision) {
+                    throw new ConcurrentModificationException();
+                }
+
+                return (K) table[tableIndex][0];
+            }
+
+            @Override
+            public V getValue() {
+                if (itRevision != revision) {
+                    throw new ConcurrentModificationException();
+                }
+
+                return (V) table[tableIndex][1];
+            }
+
+            @Override
+            public V setValue(V value) {
+                if (itRevision != revision) {
+                    throw new ConcurrentModificationException();
+                }
+
+                V oldValue = (V) table[tableIndex][1];
+                table[tableIndex][1] = value;
+                return oldValue;
+            }
         }
     }
 }
