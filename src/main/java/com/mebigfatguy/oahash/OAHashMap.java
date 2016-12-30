@@ -256,6 +256,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
             newLength += MIN_EXPANSION;
         }
 
+        int oldSize = size;
         Object[][] oldTable = table;
         table = new Object[newLength][2];
 
@@ -264,6 +265,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 put((K) element[0], (V) element[1]);
             }
         }
+        size = oldSize;
 
         return true;
     }

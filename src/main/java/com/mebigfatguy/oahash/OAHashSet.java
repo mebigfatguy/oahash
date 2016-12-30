@@ -222,6 +222,7 @@ public class OAHashSet<E> implements Set<E> {
             newLength += MIN_EXPANSION;
         }
 
+        int oldSize = size;
         Object[] oldTable = table;
         table = new Object[newLength];
 
@@ -230,6 +231,7 @@ public class OAHashSet<E> implements Set<E> {
                 add((E) element);
             }
         }
+        size = oldSize;
 
         return true;
     }
