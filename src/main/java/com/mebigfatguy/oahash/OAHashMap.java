@@ -17,6 +17,7 @@
  */
 package com.mebigfatguy.oahash;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
@@ -300,13 +301,32 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public Object[] toArray() {
 
-            return null;
+            Object[] objects = new Object[size];
+
+            int i = 0;
+            for (K k : this) {
+                objects[i++] = k;
+            }
+
+            return objects;
         }
 
         @Override
         public <T> T[] toArray(T[] a) {
 
-            return null;
+            T[] objects;
+            if (a.length <= size) {
+                objects = a;
+            } else {
+                objects = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
+            }
+
+            int i = 0;
+            for (K k : this) {
+                objects[i++] = (T) k;
+            }
+
+            return objects;
         }
 
         @Override
@@ -381,13 +401,32 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public Object[] toArray() {
 
-            return null;
+            Object[] objects = new Object[size];
+
+            int i = 0;
+            for (V v : this) {
+                objects[i++] = v;
+            }
+
+            return objects;
         }
 
         @Override
         public <T> T[] toArray(T[] a) {
 
-            return null;
+            T[] objects;
+            if (a.length <= size) {
+                objects = a;
+            } else {
+                objects = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
+            }
+
+            int i = 0;
+            for (V v : this) {
+                objects[i++] = (T) v;
+            }
+
+            return objects;
         }
 
         @Override
@@ -466,13 +505,32 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public Object[] toArray() {
 
-            return null;
+            Object[] objects = new Object[size];
+
+            int i = 0;
+            for (Map.Entry<K, V> entry : this) {
+                objects[i++] = entry;
+            }
+
+            return objects;
         }
 
         @Override
         public <T> T[] toArray(T[] a) {
 
-            return null;
+            T[] objects;
+            if (a.length <= size) {
+                objects = a;
+            } else {
+                objects = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
+            }
+
+            int i = 0;
+            for (Map.Entry<K, V> entry : this) {
+                objects[i++] = (T) entry;
+            }
+
+            return objects;
         }
 
         @Override

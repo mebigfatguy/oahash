@@ -17,6 +17,7 @@
  */
 package com.mebigfatguy.oahash;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
@@ -86,13 +87,32 @@ public class OAHashSet<E> implements Set<E> {
     @Override
     public Object[] toArray() {
 
-        return null;
+        Object[] objects = new Object[size];
+
+        int i = 0;
+        for (E e : this) {
+            objects[i++] = e;
+        }
+
+        return objects;
     }
 
     @Override
     public <T> T[] toArray(T[] a) {
 
-        return null;
+        T[] objects;
+        if (a.length <= size) {
+            objects = a;
+        } else {
+            objects = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
+        }
+
+        int i = 0;
+        for (E e : this) {
+            objects[i++] = (T) e;
+        }
+
+        return objects;
     }
 
     @Override
