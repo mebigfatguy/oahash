@@ -344,25 +344,54 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean containsAll(Collection<?> c) {
 
-            return false;
+            for (Object k : c) {
+                if (!containsKey(k)) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         @Override
         public boolean addAll(Collection<? extends K> c) {
 
-            return false;
+            boolean modified = false;
+            for (K k : c) {
+                if (!containsKey(k)) {
+                    put(k, null);
+                    modified = true;
+                }
+            }
+
+            return modified;
         }
 
         @Override
         public boolean retainAll(Collection<?> c) {
 
-            return false;
+            boolean modified = false;
+            Iterator<K> it = iterator();
+            while (it.hasNext()) {
+                K k = it.next();
+                if (!c.contains(k)) {
+                    it.remove();
+                    modified = true;
+                }
+            }
+
+            return modified;
         }
 
         @Override
         public boolean removeAll(Collection<?> c) {
 
-            return false;
+            boolean modified = false;
+            for (Object k : c) {
+                modified |= remove(k);
+            }
+
+            return modified;
         }
 
         @Override
@@ -444,25 +473,51 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean containsAll(Collection<?> c) {
 
-            return false;
+            for (Object k : c) {
+                if (!containsValue(k)) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         @Override
         public boolean addAll(Collection<? extends V> c) {
 
-            return false;
+            throw new IllegalArgumentException("put of null keys (via the values collection) is not allowed {values: " + c + ")");
         }
 
         @Override
         public boolean removeAll(Collection<?> c) {
 
-            return false;
+            boolean modified = false;
+            Iterator<V> it = iterator();
+            while (it.hasNext()) {
+                V v = it.next();
+                if (c.contains(v)) {
+                    it.remove();
+                    modified = true;
+                }
+            }
+
+            return modified;
         }
 
         @Override
         public boolean retainAll(Collection<?> c) {
 
-            return false;
+            boolean modified = false;
+            Iterator<V> it = iterator();
+            while (it.hasNext()) {
+                V v = it.next();
+                if (!c.contains(v)) {
+                    it.remove();
+                    modified = true;
+                }
+            }
+
+            return modified;
         }
 
         @Override
@@ -552,25 +607,32 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean containsAll(Collection<?> c) {
 
-            return false;
+            throw new UnsupportedOperationException("containsAll on an entry Set collection not supported");
         }
 
         @Override
         public boolean addAll(Collection<? extends java.util.Map.Entry<K, V>> c) {
 
-            return false;
+            boolean modified = false;
+            for (Map.Entry<K, V> entry : c) {
+                if (!containsKey(entry.getKey())) {
+                    put(entry.getKey(), entry.getValue());
+                    modified = true;
+                }
+            }
+            return modified;
         }
 
         @Override
         public boolean retainAll(Collection<?> c) {
 
-            return false;
+            throw new UnsupportedOperationException("retainAll on an entry Set collection not supported");
         }
 
         @Override
         public boolean removeAll(Collection<?> c) {
 
-            return false;
+            throw new UnsupportedOperationException("removeAll on an entry Set collection not supported");
         }
 
         @Override

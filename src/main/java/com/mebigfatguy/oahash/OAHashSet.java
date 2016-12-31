@@ -175,25 +175,54 @@ public class OAHashSet<E> implements Set<E> {
     @Override
     public boolean containsAll(Collection<?> c) {
 
-        return false;
+        for (Object k : c) {
+            if (!contains(k)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
 
-        return false;
+        boolean modified = false;
+        for (E e : c) {
+            if (!contains(e)) {
+                add(e);
+                modified = true;
+            }
+        }
+
+        return modified;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
 
-        return false;
+        boolean modified = false;
+        Iterator<E> it = iterator();
+        while (it.hasNext()) {
+            E e = it.next();
+            if (!c.contains(e)) {
+                it.remove();
+                modified = true;
+            }
+        }
+
+        return modified;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
 
-        return false;
+        boolean modified = false;
+        for (Object e : c) {
+            modified |= remove(e);
+        }
+
+        return modified;
     }
 
     @Override
