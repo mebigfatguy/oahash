@@ -17,6 +17,7 @@
  */
 package com.mebigfatguy.oahash;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -104,6 +105,21 @@ public class OAHashSetTest {
         }
 
         Assert.assertEquals(0, s.size());
+    }
+
+    @Test(expected = ConcurrentModificationException.class)
+    public void testCMEIterator() {
+        for (int i = 0; i < 20; i++) {
+            s.add(String.valueOf(i));
+        }
+
+        Iterator<String> it = s.iterator();
+        it = s.iterator();
+        while (it.hasNext()) {
+            it.next();
+            it.remove();
+            s.remove(String.valueOf(10));
+        }
     }
 
     static class HashCollisionsButNotEqual {
