@@ -62,6 +62,33 @@ public class OAHashSet<E> implements Set<E> {
     }
 
     @Override
+    public boolean equals(Object o) {
+
+        if (!(o instanceof Set)) {
+            return false;
+        }
+
+        Set<E> that = (Set<E>) o;
+        if (size != that.size()) {
+            return false;
+        }
+
+        return that.containsAll(this);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = size;
+
+        for (E e : this) {
+            hashCode ^= e.hashCode();
+        }
+
+        return hashCode;
+    }
+
+    @Override
     public int size() {
         return size;
     }

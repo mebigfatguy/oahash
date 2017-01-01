@@ -63,6 +63,52 @@ public class OAHashMap<K, V> implements Map<K, V> {
     }
 
     @Override
+    public boolean equals(Object o) {
+
+        if (!(o instanceof Map)) {
+            return false;
+        }
+
+        Map<K, V> that = (Map<K, V>) o;
+        if (size != that.size()) {
+            return false;
+        }
+
+        for (Map.Entry<K, V> entry : that.entrySet()) {
+            K k = entry.getKey();
+            if (k == null) {
+                return false;
+            }
+
+            V v = entry.getValue();
+            if (v == null) {
+
+            } else {
+                if ((get(k) == null) && containsKey(k)) {
+                    return false;
+                }
+            }
+            if (!v.equals(get(k))) {
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = size;
+        for (Map.Entry<K, V> entry : entrySet()) {
+            hashCode ^= entry.getKey().hashCode();
+        }
+
+        return hashCode;
+
+    }
+
+    @Override
     public int size() {
         return size;
     }
