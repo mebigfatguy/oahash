@@ -82,13 +82,10 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
             V v = entry.getValue();
             if (v == null) {
-
-            } else {
-                if ((get(k) == null) && containsKey(k)) {
+                if ((get(k) != null) || !containsKey(k)) {
                     return false;
                 }
-            }
-            if (!v.equals(get(k))) {
+            } else if (!v.equals(get(k))) {
                 return false;
             }
         }
