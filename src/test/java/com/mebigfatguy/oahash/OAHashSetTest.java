@@ -96,7 +96,7 @@ public class OAHashSetTest {
             count++;
         }
 
-        Assert.assertEquals(20, s.size());
+        Assert.assertEquals(20, count);
 
         it = s.iterator();
         while (it.hasNext()) {
