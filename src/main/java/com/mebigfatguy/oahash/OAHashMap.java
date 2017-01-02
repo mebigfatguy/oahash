@@ -614,7 +614,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public Iterator<java.util.Map.Entry<K, V>> iterator() {
 
-            return null;
+            return new OAHashMapEntrySetIterator();
         }
 
         @Override
