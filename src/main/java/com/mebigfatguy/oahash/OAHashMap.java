@@ -29,6 +29,10 @@ import java.util.Set;
 public class OAHashMap<K, V> implements Map<K, V> {
 
     private static final Object DELETED = new Object() {
+        @Override
+        public String toString() {
+            return "MAP ENTRY DELETED";
+        }
     };
 
     private static final int DEFAULT_CAPACITY = 16;

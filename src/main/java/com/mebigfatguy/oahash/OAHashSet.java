@@ -28,6 +28,10 @@ import java.util.Set;
 public class OAHashSet<E> implements Set<E> {
 
     private static final Object DELETED = new Object() {
+        @Override
+        public String toString() {
+            return "SET ENTRY DELETED";
+        }
     };
 
     private static final int DEFAULT_CAPACITY = 16;
