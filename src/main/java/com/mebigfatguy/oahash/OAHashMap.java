@@ -261,6 +261,23 @@ public class OAHashMap<K, V> implements Map<K, V> {
         return new OAEntrySet();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        String separator = "";
+
+        for (Map.Entry<K, V> entry : entrySet()) {
+            sb.append(separator).append("{").append(entry.getKey()).append(", ").append(entry.getValue()).append("}");
+            separator = ", ";
+        }
+
+        sb.append("}");
+
+        return sb.toString();
+
+    }
+
     private int find(Object key) {
         if (key == null) {
             return -1;

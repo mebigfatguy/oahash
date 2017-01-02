@@ -258,6 +258,22 @@ public class OAHashSet<E> implements Set<E> {
         Arrays.fill(table, null);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        String separator = "";
+
+        for (E e : this) {
+            sb.append(separator).append(e);
+            separator = ", ";
+        }
+
+        sb.append("}");
+
+        return sb.toString();
+    }
+
     private int find(Object e) {
         if (e == null) {
             return -1;
