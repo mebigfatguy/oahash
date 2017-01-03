@@ -17,6 +17,7 @@
  */
 package com.mebigfatguy.oahash;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -70,6 +71,28 @@ public class OAHashMapTest {
             String s = String.valueOf(i);
             Assert.assertEquals(s, m.get(s));
         }
+    }
+
+    @Test
+    public void testKeySetIteratorEqualsEntrySetIterator() {
+        for (int i = 0; i < 100; i++) {
+            String s = String.valueOf(i);
+            m.put(s, s);
+        }
+
+        Iterator<String> ksIt = m.keySet().iterator();
+        Iterator<Map.Entry<String, String>> esIt = m.entrySet().iterator();
+
+        while (ksIt.hasNext() && esIt.hasNext()) {
+            String ks = ksIt.next();
+            String es = esIt.next().getKey();
+
+            Assert.assertEquals(ks, es);
+        }
+
+        Assert.assertFalse(ksIt.hasNext());
+        Assert.assertFalse(esIt.hasNext());
+
     }
 
     @Test
