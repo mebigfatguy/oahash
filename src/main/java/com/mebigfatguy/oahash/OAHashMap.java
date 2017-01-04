@@ -612,7 +612,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 return false;
             }
 
-            return containsKey(((Map.Entry) o).getKey());
+            return containsKey(((Map.Entry<K, V>) o).getKey());
         }
 
         @Override
@@ -665,7 +665,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 return false;
             }
 
-            return OAHashMap.this.remove(((Map.Entry) o).getKey()) != null;
+            return OAHashMap.this.remove(((Map.Entry<K, V>) o).getKey()) != null;
         }
 
         @Override
