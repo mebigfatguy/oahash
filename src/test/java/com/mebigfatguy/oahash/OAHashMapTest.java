@@ -96,6 +96,19 @@ public class OAHashMapTest {
     }
 
     @Test
+    public void testContains() {
+        for (int i = 0; i < 100; i++) {
+            String s = String.valueOf(i);
+            m.put(s, s);
+        }
+
+        Assert.assertTrue(m.containsKey(String.valueOf(30)));
+        Assert.assertTrue(m.containsValue(String.valueOf(40)));
+        Assert.assertFalse(m.containsKey(String.valueOf(110)));
+        Assert.assertFalse(m.containsValue(String.valueOf(120)));
+    }
+
+    @Test
     public void testHeavyHashCollisions() {
         Map<HashCollisionsButNotEqual, HashCollisionsButNotEqual> hcm = new OAHashMap<>();
 
