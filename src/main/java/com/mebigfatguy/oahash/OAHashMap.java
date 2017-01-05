@@ -66,6 +66,12 @@ public class OAHashMap<K, V> implements Map<K, V> {
         loadFactor = initialLoadFactor;
     }
 
+    public OAHashMap(Map<K, V> source) {
+        for (Map.Entry<K, V> entry : source.entrySet()) {
+            put(entry.getKey(), entry.getValue());
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
 

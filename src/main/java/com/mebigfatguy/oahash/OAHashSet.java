@@ -65,6 +65,12 @@ public class OAHashSet<E> implements Set<E> {
         loadFactor = initialLoadFactor;
     }
 
+    public OAHashSet(Set<E> source) {
+        for (E e : source) {
+            add(e);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
 
