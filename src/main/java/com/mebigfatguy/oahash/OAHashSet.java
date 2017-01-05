@@ -71,6 +71,16 @@ public class OAHashSet<E> implements Set<E> {
         }
     }
 
+    public OAHashSet(E... source) {
+        if (source == null) {
+            return;
+        }
+
+        for (E e : source) {
+            add(e);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
 
