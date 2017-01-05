@@ -67,6 +67,12 @@ public class OAHashMap<K, V> implements Map<K, V> {
     }
 
     public OAHashMap(Map<K, V> source) {
+        this((source == null) ? DEFAULT_CAPACITY : source.size() * (source.size() * DEFAULT_CAPACITY));
+
+        if (source == null) {
+            return;
+        }
+
         for (Map.Entry<K, V> entry : source.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
