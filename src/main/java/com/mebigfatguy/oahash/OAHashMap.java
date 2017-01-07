@@ -274,6 +274,19 @@ public class OAHashMap<K, V> implements Map<K, V> {
         return new OAEntrySet();
     }
 
+    public Object[][] toArray() {
+
+        Object[][] objects = new Object[size][2];
+
+        int i = 0;
+        for (Map.Entry<K, V> entry : entrySet()) {
+            objects[i][0] = entry.getKey();
+            objects[i++][1] = entry.getValue();
+        }
+
+        return objects;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
