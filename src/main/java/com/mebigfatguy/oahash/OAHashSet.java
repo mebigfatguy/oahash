@@ -303,7 +303,7 @@ public class OAHashSet<E> implements Set<E> {
     }
 
     private int find(Object e) {
-        if (e == null) {
+        if ((e == null) || (table.length == 0)) {
             return -1;
         }
 

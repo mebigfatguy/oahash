@@ -305,7 +305,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
     }
 
     private int find(Object key) {
-        if (key == null) {
+        if ((key == null) || (table.length == 0)) {
             return -1;
         }
 
