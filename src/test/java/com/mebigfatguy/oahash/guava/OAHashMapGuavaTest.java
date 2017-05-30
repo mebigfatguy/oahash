@@ -27,6 +27,7 @@ import com.google.common.collect.testing.MapTestSuiteBuilder;
 import com.google.common.collect.testing.TestStringMapGenerator;
 import com.google.common.collect.testing.features.CollectionFeature;
 import com.google.common.collect.testing.features.CollectionSize;
+import com.google.common.collect.testing.features.MapFeature;
 import com.mebigfatguy.oahash.OAHashMap;
 
 import junit.framework.TestSuite;
@@ -46,7 +47,7 @@ public class OAHashMapGuavaTest {
                 return map;
             }
 
-        }).named("Guava Map Test").withFeatures(CollectionSize.ANY, CollectionFeature.RESTRICTS_ELEMENTS,
-                CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION, CollectionFeature.GENERAL_PURPOSE).createTestSuite();
+        }).named("Guava Map Test").withFeatures(CollectionSize.ANY, MapFeature.RESTRICTS_KEYS, CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION,
+                MapFeature.GENERAL_PURPOSE).createTestSuite();
     }
 }
