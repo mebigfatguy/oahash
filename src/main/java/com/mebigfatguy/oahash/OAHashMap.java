@@ -885,7 +885,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 throw new NoSuchElementException();
             }
 
-            return new OAMapEntry();
+            return new OAMapEntry(tableIndex);
         }
 
         @Override
@@ -918,13 +918,19 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         private final class OAMapEntry implements Map.Entry<K, V> {
 
+            private int entryIndex;
+
+            public OAMapEntry(int index) {
+                entryIndex = index;
+            }
+
             @Override
             public K getKey() {
                 if (itRevision != revision) {
                     throw new ConcurrentModificationException();
                 }
 
-                return (K) table[tableIndex][0];
+                return (K) table[entryIndex][0];
             }
 
             @Override
@@ -933,7 +939,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
                     throw new ConcurrentModificationException();
                 }
 
-                return (V) table[tableIndex][1];
+                return (V) table[entryIndex][1];
             }
 
             @Override
@@ -942,8 +948,8 @@ public class OAHashMap<K, V> implements Map<K, V> {
                     throw new ConcurrentModificationException();
                 }
 
-                V oldValue = (V) table[tableIndex][1];
-                table[tableIndex][1] = value;
+                V oldValue = (V) table[entryIndex][1];
+                table[entryIndex][1] = value;
                 return oldValue;
             }
         }
