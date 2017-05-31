@@ -756,6 +756,11 @@ public class OAHashMap<K, V> implements Map<K, V> {
         }
 
         @Override
+        public int hashCode() {
+            return OAHashMap.this.hashCode();
+        }
+
+        @Override
         public String toString() {
             StringBuilder sb = new StringBuilder();
             sb.append("[");
