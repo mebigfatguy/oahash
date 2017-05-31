@@ -26,6 +26,7 @@ import com.google.common.collect.testing.SetTestSuiteBuilder;
 import com.google.common.collect.testing.TestStringSetGenerator;
 import com.google.common.collect.testing.features.CollectionFeature;
 import com.google.common.collect.testing.features.CollectionSize;
+import com.google.common.collect.testing.features.SetFeature;
 import com.mebigfatguy.oahash.OAHashSet;
 
 import junit.framework.TestSuite;
@@ -46,6 +47,6 @@ public class OAHashSetGuavaTest {
             }
 
         }).named("Guava Map Test").withFeatures(CollectionSize.ANY, CollectionFeature.RESTRICTS_ELEMENTS,
-                CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION, CollectionFeature.GENERAL_PURPOSE).createTestSuite();
+                CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION, SetFeature.GENERAL_PURPOSE).createTestSuite();
     }
 }
