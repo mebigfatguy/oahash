@@ -38,7 +38,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
     private static final int DEFAULT_CAPACITY = 16;
     private static final double DEFAULT_LOAD_FACTOR = 0.70;
-    private static final int MIN_EXPANSION = 10;
+    private static final int MIN_EXPANSION = 20; // 10 slots
 
     private Object[] table; // odd indices are the key, even indices are the values
     private int size;
@@ -335,24 +335,29 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
     private boolean resizeIfNeeded() {
 
-        double fillPercentage = 1.0 - ((table.length - size) / ((double) table.length));
+        int slotCount = table.length >> 1;
+        double fillPercentage = 1.0 - ((slotCount - size) / ((double) slotCount));
 
         if ((fillPercentage < loadFactor) && (table.length > size)) {
             return false;
         }
 
-        int newLength = (int) (table.length + (table.length * loadFactor));
-        if (newLength <= (table.length + MIN_EXPANSION)) {
-            newLength += MIN_EXPANSION;
+        int newLength;
+        int proposedLength = ((int) (slotCount + (slotCount * loadFactor))) << 1;
+        int minNewSize = table.length + MIN_EXPANSION;
+        if (proposedLength <= minNewSize) {
+            newLength = minNewSize;
+        } else {
+            newLength = proposedLength;
         }
 
         size = 0;
         Object[] oldTable = table;
-        table = new Object[newLength << 1];
+        table = new Object[newLength];
 
         for (int i = 0; i < oldTable.length; i += 2) {
-            if ((table[0] != null) && (table[0] != DELETED)) {
-                put((K) table[i], (V) table[i + 1]);
+            if ((oldTable[0] != null) && (oldTable[0] != DELETED)) {
+                put((K) oldTable[i], (V) oldTable[i + 1]);
             }
         }
 
