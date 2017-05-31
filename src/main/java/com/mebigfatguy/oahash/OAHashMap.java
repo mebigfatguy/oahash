@@ -500,6 +500,26 @@ public class OAHashMap<K, V> implements Map<K, V> {
         }
 
         @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Set)) {
+                return false;
+            }
+
+            Set<K> that = (Set<K>) o;
+            if (size != that.size()) {
+                return false;
+            }
+
+            for (K k : that) {
+                if (!containsKey(k)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        @Override
         public String toString() {
             StringBuilder sb = new StringBuilder();
             sb.append("[");
