@@ -701,8 +701,11 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 K k = (K) ((Map.Entry) e).getKey();
                 V v = (V) ((Map.Entry) e).getValue();
 
+                if (!containsKey(k)) {
+                    return false;
+                }
                 V existingV = get(k);
-                if (!containsKey(k) || !Objects.equals(v, existingV)) {
+                if (!Objects.equals(v, existingV)) {
                     return false;
                 }
             }
