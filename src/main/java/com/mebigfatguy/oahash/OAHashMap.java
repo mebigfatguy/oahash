@@ -680,7 +680,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean add(java.util.Map.Entry<K, V> e) {
 
-            return put(e.getKey(), e.getValue()) != null;
+            return put(e.getKey(), e.getValue()) == null;
         }
 
         @Override
