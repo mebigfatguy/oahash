@@ -287,6 +287,7 @@ public class OAHashSet<E> implements Set<E> {
     public void clear() {
         ++revision;
         Arrays.fill(table, null);
+        size = 0;
     }
 
     @Override
@@ -307,7 +308,7 @@ public class OAHashSet<E> implements Set<E> {
 
     private int find(Object e) {
         if ((e == null) || (table.length == 0)) {
-            return -1;
+            return Integer.MIN_VALUE;
         }
 
         int start = e.hashCode() % table.length;
@@ -331,7 +332,7 @@ public class OAHashSet<E> implements Set<E> {
             }
         }
 
-        throw new RuntimeException("Unable to find insertion point for element {" + e + "}");
+        return Integer.MIN_VALUE;
     }
 
     private boolean resizeIfNeeded() {
