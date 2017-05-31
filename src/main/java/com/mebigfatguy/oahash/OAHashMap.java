@@ -39,7 +39,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
     private static final double DEFAULT_LOAD_FACTOR = 0.70;
     private static final int MIN_EXPANSION = 10;
 
-    private Object[][] table;
+    private Object[] table; // odd indices are the key, even indices are the values
     private int size;
     private double loadFactor;
     private int revision;
@@ -62,7 +62,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
             throw new IllegalArgumentException("Initial Load Factor must be between 0 and 100 exclusively, but was " + initialLoadFactor);
         }
 
-        table = new Object[initialCapacity][];
+        table = new Object[initialCapacity * 2];
         loadFactor = initialLoadFactor;
     }
 
@@ -146,10 +146,10 @@ public class OAHashMap<K, V> implements Map<K, V> {
             return false;
         }
 
-        for (Object[] element : table) {
-            Object tableItem = element[0];
+        for (int i = 0; i < table.length; i += 2) {
+            Object tableItem = table[i];
             if ((tableItem != null) && (tableItem != DELETED)) {
-                tableItem = element[1];
+                tableItem = table[i + 1];
 
                 if (value == null) {
                     if (tableItem == null) {
@@ -173,7 +173,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
             return null;
         }
 
-        return (V) table[foundIndex][1];
+        return (V) table[foundIndex + 1];
     }
 
     @Override
@@ -186,38 +186,36 @@ public class OAHashMap<K, V> implements Map<K, V> {
         ++revision;
         int foundIndex = find(key);
         if (foundIndex >= 0) {
-            V oldValue = (V) table[foundIndex][1];
-            table[foundIndex][1] = value;
+            int valueIndex = foundIndex + 1;
+            V oldValue = (V) table[valueIndex];
+            table[valueIndex] = value;
 
             return oldValue;
         }
 
         if (!resizeIfNeeded()) {
             foundIndex = -1 - foundIndex;
-            table[foundIndex] = new Object[2];
-            table[foundIndex][0] = key;
-            table[foundIndex][1] = value;
+            table[foundIndex++] = key;
+            table[foundIndex] = value;
             ++size;
             return null;
         }
 
-        int start = key.hashCode() % table.length;
+        int start = (key.hashCode() % (table.length >> 1)) << 1;
 
-        for (int i = start; i < table.length; i++) {
+        for (int i = start; i < table.length; i += 2) {
             if ((table[i] == null) || (table[i] == DELETED)) {
-                table[i] = new Object[2];
-                table[i][0] = key;
-                table[i][1] = value;
+                table[i++] = key;
+                table[i] = value;
                 ++size;
                 return null;
             }
         }
 
-        for (int i = 0; i < start; i++) {
-            Object tableItem = table[i][0];
-            if ((tableItem == null) || (tableItem == DELETED)) {
-                table[i][0] = key;
-                table[i][1] = value;
+        for (int i = 0; i < start; i += 2) {
+            if ((table[i] == null) || (table[i] == DELETED)) {
+                table[i++] = key;
+                table[i] = value;
                 ++size;
                 return null;
             }
@@ -235,9 +233,9 @@ public class OAHashMap<K, V> implements Map<K, V> {
             return null;
         }
 
-        V value = (V) table[foundIndex][1];
-        table[foundIndex][0] = DELETED;
-        table[foundIndex][1] = null;
+        V value = (V) table[foundIndex + 1];
+        table[foundIndex++] = DELETED;
+        table[foundIndex] = null;
         --size;
         return value;
     }
@@ -305,12 +303,12 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
     private int find(Object key) {
         if ((key == null) || (table.length == 0)) {
-            return -1;
+            return Integer.MIN_VALUE;
         }
 
-        int start = key.hashCode() % table.length;
-        for (int i = start; i < table.length; i++) {
-            Object tableItem = table[i][0];
+        int start = (key.hashCode() % (table.length >> 1)) << 1;
+        for (int i = start; i < table.length; i += 2) {
+            Object tableItem = table[i];
             if (tableItem == null) {
                 return -i - 1;
             }
@@ -320,8 +318,8 @@ public class OAHashMap<K, V> implements Map<K, V> {
             }
         }
 
-        for (int i = 0; i < start; i++) {
-            Object tableItem = table[i][0];
+        for (int i = 0; i < start; i += 2) {
+            Object tableItem = table[i];
             if (tableItem == null) {
                 return -i - 1;
             }
@@ -331,7 +329,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
             }
         }
 
-        throw new RuntimeException("Unable to find insertion point for key {" + key + "}");
+        return Integer.MIN_VALUE;
     }
 
     private boolean resizeIfNeeded() {
@@ -348,12 +346,12 @@ public class OAHashMap<K, V> implements Map<K, V> {
         }
 
         size = 0;
-        Object[][] oldTable = table;
-        table = new Object[newLength][];
+        Object[] oldTable = table;
+        table = new Object[newLength << 1];
 
-        for (Object[] element : oldTable) {
-            if ((element[0] != null) && (element[0] != DELETED)) {
-                put((K) element[0], (V) element[1]);
+        for (int i = 0; i < oldTable.length; i += 2) {
+            if ((table[0] != null) && (table[0] != DELETED)) {
+                put((K) table[i], (V) table[i + 1]);
             }
         }
 
@@ -754,7 +752,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         private int tableIndex;
 
         public OAHashMapKeySetIterator() {
-            tableIndex = -1;
+            tableIndex = -2;
         }
 
         @Override
@@ -778,7 +776,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 throw new NoSuchElementException();
             }
 
-            return (K) table[tableIndex][0];
+            return (K) table[tableIndex];
         }
 
         @Override
@@ -791,8 +789,8 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 throw new NoSuchElementException();
             }
 
-            table[tableIndex][0] = DELETED;
-            table[tableIndex][1] = null;
+            table[tableIndex] = DELETED;
+            table[tableIndex + 1] = null;
             --size;
 
             ++itRevision;
@@ -800,13 +798,13 @@ public class OAHashMap<K, V> implements Map<K, V> {
         }
 
         private void findNextSlot() {
-            tableIndex++;
+            tableIndex += 2;
             while (tableIndex < table.length) {
                 if ((table[tableIndex] != null) && (table[tableIndex] != DELETED)) {
                     break;
                 }
 
-                tableIndex++;
+                tableIndex += 2;
             }
         }
     }
@@ -817,7 +815,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         private int tableIndex;
 
         public OAHashMapValuesIterator() {
-            tableIndex = -1;
+            tableIndex = -2;
         }
 
         @Override
@@ -841,7 +839,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 throw new NoSuchElementException();
             }
 
-            return (V) table[tableIndex][1];
+            return (V) table[tableIndex + 1];
         }
 
         @Override
@@ -854,21 +852,21 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 throw new NoSuchElementException();
             }
 
-            table[tableIndex][0] = DELETED;
-            table[tableIndex][1] = null;
+            table[tableIndex] = DELETED;
+            table[tableIndex + 1] = null;
             --size;
             ++itRevision;
             ++revision;
         }
 
         private void findNextSlot() {
-            tableIndex++;
+            tableIndex += 2;
             while (tableIndex < table.length) {
                 if ((table[tableIndex] != null) && (table[tableIndex] != DELETED)) {
                     break;
                 }
 
-                tableIndex++;
+                tableIndex += 2;
             }
         }
     }
@@ -879,7 +877,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         private int tableIndex;
 
         public OAHashMapEntrySetIterator() {
-            tableIndex = -1;
+            tableIndex = -2;
         }
 
         @Override
@@ -916,21 +914,21 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 throw new NoSuchElementException();
             }
 
-            table[tableIndex][0] = DELETED;
-            table[tableIndex][1] = null;
+            table[tableIndex] = DELETED;
+            table[tableIndex + 1] = null;
             --size;
             ++itRevision;
             ++revision;
         }
 
         private void findNextSlot() {
-            tableIndex++;
+            tableIndex += 2;
             while (tableIndex < table.length) {
                 if ((table[tableIndex] != null) && (table[tableIndex] != DELETED)) {
                     break;
                 }
 
-                tableIndex++;
+                tableIndex += 2;
             }
         }
 
@@ -948,7 +946,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
                     throw new ConcurrentModificationException();
                 }
 
-                return (K) table[entryIndex][0];
+                return (K) table[entryIndex];
             }
 
             @Override
@@ -957,7 +955,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
                     throw new ConcurrentModificationException();
                 }
 
-                return (V) table[entryIndex][1];
+                return (V) table[entryIndex + 1];
             }
 
             @Override
@@ -966,14 +964,14 @@ public class OAHashMap<K, V> implements Map<K, V> {
                     throw new ConcurrentModificationException();
                 }
 
-                V oldValue = (V) table[entryIndex][1];
-                table[entryIndex][1] = value;
+                V oldValue = (V) table[entryIndex + 1];
+                table[entryIndex + 1] = value;
                 return oldValue;
             }
 
             @Override
             public String toString() {
-                return "[" + table[entryIndex][0] + ", " + table[entryIndex][1] + "]";
+                return "[" + table[entryIndex] + ", " + table[entryIndex + 1] + "]";
             }
         }
     }
