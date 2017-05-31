@@ -47,7 +47,7 @@ public class OAHashMapGuavaTest {
                 return map;
             }
 
-        }).named("Guava Map Test").withFeatures(CollectionSize.ANY, CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION, MapFeature.GENERAL_PURPOSE)
-                .createTestSuite();
+        }).named("Guava Map Test").withFeatures(CollectionSize.ANY, CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION, MapFeature.ALLOWS_NULL_VALUES,
+                MapFeature.GENERAL_PURPOSE).createTestSuite();
     }
 }
