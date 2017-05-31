@@ -422,7 +422,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean add(K e) {
 
-            return put(e, null) != null;
+            return put(e, null) == null;
         }
 
         @Override
