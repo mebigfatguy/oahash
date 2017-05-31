@@ -293,7 +293,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         String separator = "";
 
         for (Map.Entry<K, V> entry : entrySet()) {
-            sb.append(separator).append("{").append(entry.getKey()).append(", ").append(entry.getValue()).append("}");
+            sb.append(separator).append(entry.getKey()).append("=").append(entry.getValue());
             separator = ", ";
         }
 
