@@ -254,6 +254,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         for (Object[] element : table) {
             Arrays.fill(element, null);
         }
+        size = 0;
     }
 
     @Override
