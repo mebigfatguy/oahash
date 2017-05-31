@@ -801,7 +801,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
             boolean modified = false;
             for (Object o : c) {
                 Map.Entry<K, V> entry = (Map.Entry<K, V>) o;
-                modified |= remove(entry.getKey());
+                modified |= (OAHashMap.this.remove(entry.getKey()) != null);
             }
             return modified;
         }
