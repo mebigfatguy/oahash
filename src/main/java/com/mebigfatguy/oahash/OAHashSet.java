@@ -365,11 +365,13 @@ public class OAHashSet<E> implements Set<E> {
 
         private int itRevision = revision;
         private int tableIndex;
+        private int activeIndex;
         private boolean primed;
 
         public OAHashSetIterator() {
             tableIndex = -1;
-            findNextSlot();
+            activeIndex = -1;
+            primed = false;
         }
 
         @Override
@@ -390,12 +392,13 @@ public class OAHashSet<E> implements Set<E> {
             }
 
             findNextSlot();
+            primed = false;
 
             if ((tableIndex < 0) || (tableIndex >= table.length)) {
                 throw new NoSuchElementException();
             }
-            primed = false;
 
+            activeIndex = tableIndex;
             return (E) table[tableIndex];
         }
 
@@ -405,16 +408,19 @@ public class OAHashSet<E> implements Set<E> {
                 throw new ConcurrentModificationException();
             }
 
-            if ((tableIndex < 0) || (tableIndex >= table.length) || primed) {
+            if ((activeIndex < 0) || (activeIndex >= table.length)) {
                 throw new IllegalStateException();
             }
 
-            table[tableIndex] = DELETED;
+            table[activeIndex] = DELETED;
             --size;
             --tableIndex;
+            activeIndex = -1;
+            primed = false;
             ++itRevision;
             ++revision;
-            primed = false;
+            findNextSlot();
+            tableIndex = -1;
         }
 
         private void findNextSlot() {
@@ -422,7 +428,7 @@ public class OAHashSet<E> implements Set<E> {
                 return;
             }
 
-            tableIndex++;
+            ++tableIndex;
             while (tableIndex < table.length) {
                 if ((table[tableIndex] != null) && (table[tableIndex] != DELETED)) {
                     primed = true;
