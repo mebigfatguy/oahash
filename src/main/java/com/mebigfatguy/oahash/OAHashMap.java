@@ -180,7 +180,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
     public V put(K key, V value) {
 
         if (key == null) {
-            throw new IllegalArgumentException("put of null key is not allowed {null, " + value + ")");
+            throw new NullPointerException("put of null key is not allowed {null, " + value + ")");
         }
 
         ++revision;

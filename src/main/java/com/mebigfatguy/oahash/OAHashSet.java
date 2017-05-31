@@ -174,7 +174,7 @@ public class OAHashSet<E> implements Set<E> {
     public boolean add(E e) {
 
         if (e == null) {
-            throw new IllegalArgumentException("add of null value is not allowed");
+            throw new NullPointerException("add of null value is not allowed");
         }
 
         ++revision;
