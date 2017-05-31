@@ -764,9 +764,13 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         private int itRevision = revision;
         private int tableIndex;
+        private int activeIndex;
+        private boolean primed;
 
         public OAHashMapKeySetIterator() {
             tableIndex = -2;
+            activeIndex = -2;
+            primed = false;
         }
 
         @Override
@@ -786,10 +790,14 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 throw new ConcurrentModificationException();
             }
 
+            findNextSlot();
+            primed = false;
+
             if ((tableIndex < 0) || (tableIndex >= table.length)) {
                 throw new NoSuchElementException();
             }
 
+            activeIndex = tableIndex;
             return (K) table[tableIndex];
         }
 
@@ -799,22 +807,30 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 throw new ConcurrentModificationException();
             }
 
-            if ((tableIndex < 0) || (tableIndex >= table.length)) {
-                throw new NoSuchElementException();
+            if ((activeIndex < 0) || (activeIndex >= table.length)) {
+                throw new IllegalStateException();
             }
 
             table[tableIndex] = DELETED;
             table[tableIndex + 1] = null;
             --size;
-
+            tableIndex = activeIndex - 2;
+            activeIndex = -2;
+            primed = false;
             ++itRevision;
             ++revision;
+            findNextSlot();
         }
 
         private void findNextSlot() {
+            if (primed) {
+                return;
+            }
+
             tableIndex += 2;
             while (tableIndex < table.length) {
                 if ((table[tableIndex] != null) && (table[tableIndex] != DELETED)) {
+                    primed = true;
                     break;
                 }
 
@@ -827,9 +843,13 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         private int itRevision = revision;
         private int tableIndex;
+        private int activeIndex;
+        private boolean primed;
 
         public OAHashMapValuesIterator() {
             tableIndex = -2;
+            activeIndex = -2;
+            primed = false;
         }
 
         @Override
@@ -849,10 +869,14 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 throw new ConcurrentModificationException();
             }
 
+            findNextSlot();
+            primed = false;
+
             if ((tableIndex < 0) || (tableIndex >= table.length)) {
                 throw new NoSuchElementException();
             }
 
+            activeIndex = tableIndex;
             return (V) table[tableIndex + 1];
         }
 
@@ -862,21 +886,30 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 throw new ConcurrentModificationException();
             }
 
-            if ((tableIndex < 0) || (tableIndex >= table.length)) {
-                throw new NoSuchElementException();
+            if ((activeIndex < 0) || (activeIndex >= table.length)) {
+                throw new IllegalStateException();
             }
 
             table[tableIndex] = DELETED;
             table[tableIndex + 1] = null;
             --size;
+            tableIndex = activeIndex - 2;
+            activeIndex = -2;
+            primed = false;
             ++itRevision;
             ++revision;
+            findNextSlot();
         }
 
         private void findNextSlot() {
+            if (primed) {
+                return;
+            }
+
             tableIndex += 2;
             while (tableIndex < table.length) {
                 if ((table[tableIndex] != null) && (table[tableIndex] != DELETED)) {
+                    primed = true;
                     break;
                 }
 
@@ -889,9 +922,13 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         private int itRevision = revision;
         private int tableIndex;
+        private int activeIndex;
+        private boolean primed;
 
         public OAHashMapEntrySetIterator() {
             tableIndex = -2;
+            activeIndex = -2;
+            primed = false;
         }
 
         @Override
@@ -911,10 +948,14 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 throw new ConcurrentModificationException();
             }
 
+            findNextSlot();
+            primed = false;
+
             if ((tableIndex < 0) || (tableIndex >= table.length)) {
                 throw new NoSuchElementException();
             }
 
+            activeIndex = tableIndex;
             return new OAMapEntry(tableIndex);
         }
 
@@ -924,21 +965,30 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 throw new ConcurrentModificationException();
             }
 
-            if ((tableIndex < 0) || (tableIndex >= table.length)) {
-                throw new NoSuchElementException();
+            if ((activeIndex < 0) || (activeIndex >= table.length)) {
+                throw new IllegalStateException();
             }
 
             table[tableIndex] = DELETED;
             table[tableIndex + 1] = null;
             --size;
+            tableIndex = activeIndex - 2;
+            activeIndex = -2;
+            primed = false;
             ++itRevision;
             ++revision;
+            findNextSlot();
         }
 
         private void findNextSlot() {
+            if (primed) {
+                return;
+            }
+
             tableIndex += 2;
             while (tableIndex < table.length) {
                 if ((table[tableIndex] != null) && (table[tableIndex] != DELETED)) {
+                    primed = true;
                     break;
                 }
 

@@ -436,7 +436,6 @@ public class OAHashSet<E> implements Set<E> {
 
                 tableIndex++;
             }
-
         }
     }
 }
