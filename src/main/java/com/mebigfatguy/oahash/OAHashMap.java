@@ -761,6 +761,26 @@ public class OAHashMap<K, V> implements Map<K, V> {
         }
 
         @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Set)) {
+                return false;
+            }
+            Collection<? extends java.util.Map.Entry<K, V>> c = (Collection<? extends java.util.Map.Entry<K, V>>) o;
+
+            if (size != c.size()) {
+                return false;
+            }
+
+            for (Map.Entry<K, V> e : c) {
+                if (!contains(e)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        @Override
         public String toString() {
             StringBuilder sb = new StringBuilder();
             sb.append("[");
