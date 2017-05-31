@@ -490,6 +490,16 @@ public class OAHashMap<K, V> implements Map<K, V> {
         }
 
         @Override
+        public int hashCode() {
+            int hashCode = 0;
+            for (Map.Entry<K, V> entry : entrySet()) {
+                hashCode += entry.getKey().hashCode();
+            }
+
+            return hashCode;
+        }
+
+        @Override
         public String toString() {
             StringBuilder sb = new StringBuilder();
             sb.append("[");
