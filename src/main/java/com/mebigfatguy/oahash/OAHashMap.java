@@ -1127,8 +1127,24 @@ public class OAHashMap<K, V> implements Map<K, V> {
             }
 
             @Override
+            public int hashCode() {
+                return Objects.hashCode(table[entryIndex]) ^ Objects.hashCode(table[entryIndex + 1]);
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                if (!(o instanceof Map.Entry)) {
+                    return false;
+                }
+
+                Map.Entry that = (Map.Entry) o;
+
+                return Objects.equals(table[entryIndex], that.getKey()) && Objects.equals(table[entryIndex + 1], that.getValue());
+            }
+
+            @Override
             public String toString() {
-                return "[" + table[entryIndex] + ", " + table[entryIndex + 1] + "]";
+                return "[" + table[entryIndex] + "=" + table[entryIndex + 1] + "]";
             }
         }
     }
