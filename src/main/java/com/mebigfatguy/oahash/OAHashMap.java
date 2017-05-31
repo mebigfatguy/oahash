@@ -662,7 +662,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         public <T> T[] toArray(T[] a) {
 
             T[] objects;
-            if (a.length <= size) {
+            if (a.length >= size) {
                 objects = a;
             } else {
                 objects = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
@@ -671,6 +671,9 @@ public class OAHashMap<K, V> implements Map<K, V> {
             int i = 0;
             for (Map.Entry<K, V> entry : this) {
                 objects[i++] = (T) entry;
+            }
+            if (i < objects.length) {
+                objects[i] = null;
             }
 
             return objects;
