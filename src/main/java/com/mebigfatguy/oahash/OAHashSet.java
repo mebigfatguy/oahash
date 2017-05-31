@@ -289,7 +289,7 @@ public class OAHashSet<E> implements Set<E> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("{");
+        sb.append("[");
         String separator = "";
 
         for (E e : this) {
@@ -297,7 +297,7 @@ public class OAHashSet<E> implements Set<E> {
             separator = ", ";
         }
 
-        sb.append("}");
+        sb.append("]");
 
         return sb.toString();
     }
