@@ -652,6 +652,21 @@ public class OAHashMap<K, V> implements Map<K, V> {
             OAHashMap.this.clear();
         }
 
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("[");
+            String separator = "";
+
+            for (Map.Entry<K, V> entry : entrySet()) {
+                sb.append(separator).append(entry.getValue());
+                separator = ", ";
+            }
+
+            sb.append("]");
+
+            return sb.toString();
+        }
     }
 
     private final class OAEntrySet implements Set<Map.Entry<K, V>> {
