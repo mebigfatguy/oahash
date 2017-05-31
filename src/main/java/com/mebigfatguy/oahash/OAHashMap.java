@@ -421,8 +421,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public boolean add(K e) {
-
-            return put(e, null) == null;
+            throw new UnsupportedOperationException("add");
         }
 
         @Override
@@ -445,20 +444,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public boolean addAll(Collection<? extends K> c) {
-
-            if (c.isEmpty()) {
-                return false;
-            }
-
-            boolean modified = false;
-            for (K k : c) {
-                if (!containsKey(k)) {
-                    put(k, null);
-                    modified = true;
-                }
-            }
-
-            return modified;
+            throw new UnsupportedOperationException("addAll");
         }
 
         @Override
@@ -603,8 +589,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public boolean add(V e) {
-
-            throw new IllegalArgumentException("put of null key (via the values collection) is not allowed {value: " + e + ")");
+            throw new UnsupportedOperationException("add");
         }
 
         @Override
@@ -627,12 +612,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public boolean addAll(Collection<? extends V> c) {
-
-            if (c.isEmpty()) {
-                return false;
-            }
-
-            throw new IllegalArgumentException("put of null keys (via the values collection) is not allowed {values: " + c + ")");
+            throw new UnsupportedOperationException("addAll");
         }
 
         @Override
@@ -740,8 +720,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public boolean add(java.util.Map.Entry<K, V> e) {
-
-            return put(e.getKey(), e.getValue()) == null;
+            throw new UnsupportedOperationException("add");
         }
 
         @Override
@@ -775,19 +754,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public boolean addAll(Collection<? extends java.util.Map.Entry<K, V>> c) {
-
-            if (c.isEmpty()) {
-                return false;
-            }
-
-            boolean modified = false;
-            for (Map.Entry<K, V> entry : c) {
-                if (!containsKey(entry.getKey())) {
-                    put(entry.getKey(), entry.getValue());
-                    modified = true;
-                }
-            }
-            return modified;
+            throw new UnsupportedOperationException("addAll");
         }
 
         @Override
