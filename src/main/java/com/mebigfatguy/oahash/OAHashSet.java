@@ -365,9 +365,11 @@ public class OAHashSet<E> implements Set<E> {
 
         private int itRevision = revision;
         private int tableIndex;
+        private boolean consumed;
 
         public OAHashSetIterator() {
             tableIndex = -1;
+            consumed = true;
         }
 
         @Override
@@ -387,9 +389,12 @@ public class OAHashSet<E> implements Set<E> {
                 throw new ConcurrentModificationException();
             }
 
+            findNextSlot();
+
             if ((tableIndex < 0) || (tableIndex >= table.length)) {
                 throw new NoSuchElementException();
             }
+            consumed = true;
 
             return (E) table[tableIndex];
         }
@@ -411,6 +416,10 @@ public class OAHashSet<E> implements Set<E> {
         }
 
         private void findNextSlot() {
+            if (!consumed) {
+                return;
+            }
+
             tableIndex++;
             while (tableIndex < table.length) {
                 if ((table[tableIndex] != null) && (table[tableIndex] != DELETED)) {
@@ -419,6 +428,7 @@ public class OAHashSet<E> implements Set<E> {
 
                 tableIndex++;
             }
+            consumed = false;
         }
     }
 }
