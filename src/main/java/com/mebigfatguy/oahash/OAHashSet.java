@@ -414,13 +414,12 @@ public class OAHashSet<E> implements Set<E> {
 
             table[activeIndex] = DELETED;
             --size;
-            --tableIndex;
+            tableIndex = activeIndex - 1;
             activeIndex = -1;
             primed = false;
             ++itRevision;
             ++revision;
             findNextSlot();
-            tableIndex = -1;
         }
 
         private void findNextSlot() {
