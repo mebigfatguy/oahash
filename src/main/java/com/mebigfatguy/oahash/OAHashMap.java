@@ -62,7 +62,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
             throw new IllegalArgumentException("Initial Load Factor must be between 0 and 100 exclusively, but was " + initialLoadFactor);
         }
 
-        table = new Object[initialCapacity][2];
+        table = new Object[initialCapacity][];
         loadFactor = initialLoadFactor;
     }
 
@@ -194,6 +194,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         if (!resizeIfNeeded()) {
             foundIndex = -1 - foundIndex;
+            table[foundIndex] = new Object[2];
             table[foundIndex][0] = key;
             table[foundIndex][1] = value;
             ++size;
@@ -203,8 +204,8 @@ public class OAHashMap<K, V> implements Map<K, V> {
         int start = key.hashCode() % table.length;
 
         for (int i = start; i < table.length; i++) {
-            Object tableItem = table[i][0];
-            if ((tableItem == null) || (tableItem == DELETED)) {
+            if ((table[i] == null) || (table[i] == DELETED)) {
+                table[i] = new Object[2];
                 table[i][0] = key;
                 table[i][1] = value;
                 ++size;
@@ -251,9 +252,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
     @Override
     public void clear() {
         ++revision;
-        for (Object[] element : table) {
-            Arrays.fill(element, null);
-        }
+        Arrays.fill(table, null);
         size = 0;
     }
 
@@ -291,7 +290,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("[");
+        sb.append("{");
         String separator = "";
 
         for (Map.Entry<K, V> entry : entrySet()) {
@@ -299,7 +298,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
             separator = ", ";
         }
 
-        sb.append("]");
+        sb.append("}");
 
         return sb.toString();
     }
@@ -350,7 +349,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         size = 0;
         Object[][] oldTable = table;
-        table = new Object[newLength][2];
+        table = new Object[newLength][];
 
         for (Object[] element : oldTable) {
             if ((element[0] != null) && (element[0] != DELETED)) {
@@ -970,6 +969,11 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 V oldValue = (V) table[entryIndex][1];
                 table[entryIndex][1] = value;
                 return oldValue;
+            }
+
+            @Override
+            public String toString() {
+                return "[" + table[entryIndex][0] + ", " + table[entryIndex][1] + "]";
             }
         }
     }
