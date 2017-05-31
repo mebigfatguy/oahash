@@ -728,8 +728,15 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public boolean retainAll(Collection<?> c) {
+            boolean modified = false;
 
-            throw new UnsupportedOperationException("retainAll on an entry Set collection not supported");
+            for (Map.Entry<K, V> entry : entrySet()) {
+                if (!c.contains(entry)) {
+                    modified |= remove(entry.getKey());
+                }
+            }
+
+            return modified;
         }
 
         @Override
