@@ -107,10 +107,10 @@ public class OAHashSet<E> implements Set<E> {
 
     @Override
     public int hashCode() {
-        int hashCode = size;
+        int hashCode = 0;
 
         for (E e : this) {
-            hashCode ^= e.hashCode();
+            hashCode += e.hashCode();
         }
 
         return hashCode;
