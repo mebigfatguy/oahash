@@ -446,6 +446,10 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean addAll(Collection<? extends K> c) {
 
+            if ((c == null) || c.isEmpty()) {
+                return false;
+            }
+
             boolean modified = false;
             for (K k : c) {
                 if (!containsKey(k)) {
@@ -624,6 +628,10 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean addAll(Collection<? extends V> c) {
 
+            if ((c == null) || c.isEmpty()) {
+                return false;
+            }
+
             throw new IllegalArgumentException("put of null keys (via the values collection) is not allowed {values: " + c + ")");
         }
 
@@ -767,6 +775,10 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public boolean addAll(Collection<? extends java.util.Map.Entry<K, V>> c) {
+
+            if ((c == null) || c.isEmpty()) {
+                return false;
+            }
 
             boolean modified = false;
             for (Map.Entry<K, V> entry : c) {
