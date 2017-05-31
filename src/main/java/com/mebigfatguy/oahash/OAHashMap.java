@@ -113,9 +113,9 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
     @Override
     public int hashCode() {
-        int hashCode = size;
+        int hashCode = 0;
         for (Map.Entry<K, V> entry : entrySet()) {
-            hashCode ^= entry.getKey().hashCode();
+            hashCode += Objects.hashCode(entry.getKey()) ^ Objects.hashCode(entry.getValue());
         }
 
         return hashCode;
@@ -488,7 +488,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         public int hashCode() {
             int hashCode = 0;
             for (Map.Entry<K, V> entry : entrySet()) {
-                hashCode += entry.getKey().hashCode();
+                hashCode += Objects.hashCode(entry.getKey());
             }
 
             return hashCode;
