@@ -166,6 +166,9 @@ public class OAHashSet<E> implements Set<E> {
         for (E e : this) {
             objects[i++] = (T) e;
         }
+        if (i < objects.length) {
+            objects[i] = null;
+        }
 
         return objects;
     }
