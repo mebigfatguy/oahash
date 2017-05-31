@@ -735,7 +735,12 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean removeAll(Collection<?> c) {
 
-            throw new UnsupportedOperationException("removeAll on an entry Set collection not supported");
+            boolean modified = false;
+            for (Object o : c) {
+                Map.Entry<K, V> entry = (Map.Entry<K, V>) o;
+                modified |= remove(entry.getKey());
+            }
+            return modified;
         }
 
         @Override
