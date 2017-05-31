@@ -290,7 +290,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("{");
+        sb.append("[");
         String separator = "";
 
         for (Map.Entry<K, V> entry : entrySet()) {
@@ -298,10 +298,9 @@ public class OAHashMap<K, V> implements Map<K, V> {
             separator = ", ";
         }
 
-        sb.append("}");
+        sb.append("]");
 
         return sb.toString();
-
     }
 
     private int find(Object key) {
@@ -727,6 +726,22 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public void clear() {
             OAHashMap.this.clear();
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("[");
+            String separator = "";
+
+            for (Map.Entry<K, V> entry : entrySet()) {
+                sb.append(separator).append("{").append(entry.getKey()).append(", ").append(entry.getValue()).append("}");
+                separator = ", ";
+            }
+
+            sb.append("]");
+
+            return sb.toString();
         }
     }
 
