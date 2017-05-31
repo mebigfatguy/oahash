@@ -46,7 +46,7 @@ public class OAHashSetGuavaTest {
                 return set;
             }
 
-        }).named("Guava Map Test").withFeatures(CollectionSize.ANY, CollectionFeature.RESTRICTS_ELEMENTS,
-                CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION, SetFeature.GENERAL_PURPOSE).createTestSuite();
+        }).named("Guava Map Test").withFeatures(CollectionSize.ANY, CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION, SetFeature.GENERAL_PURPOSE)
+                .createTestSuite();
     }
 }
