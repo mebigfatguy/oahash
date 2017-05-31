@@ -156,7 +156,7 @@ public class OAHashSet<E> implements Set<E> {
     public <T> T[] toArray(T[] a) {
 
         T[] objects;
-        if (a.length <= size) {
+        if (a.length >= size) {
             objects = a;
         } else {
             objects = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
