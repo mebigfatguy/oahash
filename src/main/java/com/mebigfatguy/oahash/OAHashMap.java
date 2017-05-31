@@ -24,6 +24,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 
 public class OAHashMap<K, V> implements Map<K, V> {
@@ -696,7 +697,17 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean containsAll(Collection<?> c) {
 
-            throw new UnsupportedOperationException("containsAll on an entry Set collection not supported");
+            for (Object e : c) {
+                K k = (K) ((Map.Entry) e).getKey();
+                V v = (V) ((Map.Entry) e).getValue();
+
+                V existingV = get(k);
+                if (!containsKey(k) || !Objects.equals(v, existingV)) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         @Override
