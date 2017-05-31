@@ -446,7 +446,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean addAll(Collection<? extends K> c) {
 
-            if ((c == null) || c.isEmpty()) {
+            if (c.isEmpty()) {
                 return false;
             }
 
@@ -628,7 +628,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean addAll(Collection<? extends V> c) {
 
-            if ((c == null) || c.isEmpty()) {
+            if (c.isEmpty()) {
                 return false;
             }
 
@@ -776,7 +776,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean addAll(Collection<? extends java.util.Map.Entry<K, V>> c) {
 
-            if ((c == null) || c.isEmpty()) {
+            if (c.isEmpty()) {
                 return false;
             }
 
