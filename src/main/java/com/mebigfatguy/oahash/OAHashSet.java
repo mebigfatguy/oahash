@@ -397,7 +397,7 @@ public class OAHashSet<E> implements Set<E> {
             }
 
             if ((tableIndex < 0) || (tableIndex >= table.length)) {
-                throw new NoSuchElementException();
+                throw new IllegalStateException();
             }
 
             table[tableIndex] = DELETED;
