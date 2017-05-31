@@ -328,7 +328,7 @@ public class OAHashSet<E> implements Set<E> {
             }
         }
 
-        throw new RuntimeException("Unable to find insertion point for e;ement {" + e + "}");
+        throw new RuntimeException("Unable to find insertion point for element {" + e + "}");
     }
 
     private boolean resizeIfNeeded() {
