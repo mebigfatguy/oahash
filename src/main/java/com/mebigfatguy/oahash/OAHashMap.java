@@ -454,17 +454,30 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public boolean retainAll(Collection<?> c) {
+            if (c.isEmpty()) {
+                boolean wasEmpty = isEmpty();
+                OAHashMap.this.clear();
+                return !wasEmpty;
+            }
 
             boolean modified = false;
-            Iterator<K> it = iterator();
-            while (it.hasNext()) {
-                K k = it.next();
-                if (!c.contains(k)) {
-                    it.remove();
-                    modified = true;
+            for (int i = 0; i < table.length; i += 2) {
+                final K key = (K) table[i];
+
+                if ((key != null) && (key != DELETED)) {
+
+                    if (!c.contains(key)) {
+                        table[i] = DELETED;
+                        table[i + 1] = null;
+                        --size;
+                        modified = true;
+                    }
                 }
             }
 
+            if (modified) {
+                ++revision;
+            }
             return modified;
         }
 
@@ -624,11 +637,11 @@ public class OAHashMap<K, V> implements Map<K, V> {
         public boolean removeAll(Collection<?> c) {
 
             boolean modified = false;
-            Iterator<V> it = iterator();
+            OAHashMapValuesIterator it = (OAHashMapValuesIterator) iterator();
             while (it.hasNext()) {
                 V v = it.next();
                 if (c.contains(v)) {
-                    it.remove();
+                    it.removeInternal();
                     modified = true;
                 }
             }
@@ -638,17 +651,31 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public boolean retainAll(Collection<?> c) {
+            if (c.isEmpty()) {
+                boolean wasEmpty = isEmpty();
+                OAHashMap.this.clear();
+                return !wasEmpty;
+            }
 
             boolean modified = false;
-            Iterator<V> it = iterator();
-            while (it.hasNext()) {
-                V v = it.next();
-                if (!c.contains(v)) {
-                    it.remove();
-                    modified = true;
+            for (int i = 0; i < table.length; i += 2) {
+                final K key = (K) table[i];
+
+                if ((key != null) && (key != DELETED)) {
+                    final V value = (V) table[i + 1];
+
+                    if (!c.contains(value)) {
+                        table[i] = DELETED;
+                        table[i + 1] = null;
+                        --size;
+                        modified = true;
+                    }
                 }
             }
 
+            if (modified) {
+                ++revision;
+            }
             return modified;
         }
 
@@ -914,6 +941,12 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public void remove() {
+
+            throw new UnsupportedOperationException("remove");
+        }
+
+        private void removeInternal() {
+
             if (itRevision != revision) {
                 throw new ConcurrentModificationException();
             }
@@ -922,8 +955,8 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 throw new IllegalStateException();
             }
 
-            table[tableIndex] = DELETED;
-            table[tableIndex + 1] = null;
+            table[activeIndex] = DELETED;
+            table[activeIndex + 1] = null;
             --size;
             tableIndex = activeIndex - 2;
             activeIndex = -2;
@@ -993,6 +1026,29 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public void remove() {
+            throw new UnsupportedOperationException("remove");
+            /*
+            if (itRevision != revision) {
+                throw new ConcurrentModificationException();
+            }
+
+            if ((activeIndex < 0) || (activeIndex >= table.length)) {
+                throw new IllegalStateException();
+            }
+
+            table[tableIndex] = DELETED;
+            table[tableIndex + 1] = null;
+            --size;
+            tableIndex = activeIndex - 2;
+            activeIndex = -2;
+            primed = false;
+            ++itRevision;
+            ++revision;
+            findNextSlot();
+            */
+        }
+
+        private void removeInternal() {
             if (itRevision != revision) {
                 throw new ConcurrentModificationException();
             }
@@ -1073,7 +1129,9 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public void remove() {
             throw new UnsupportedOperationException("remove");
-            /*
+        }
+
+        private void removeInternal() {
             if (itRevision != revision) {
                 throw new ConcurrentModificationException();
             }
@@ -1091,7 +1149,6 @@ public class OAHashMap<K, V> implements Map<K, V> {
             ++itRevision;
             ++revision;
             findNextSlot();
-            */
         }
 
         private void findNextSlot() {
