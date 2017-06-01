@@ -861,7 +861,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
             String separator = "";
 
             for (Map.Entry<K, V> entry : entrySet()) {
-                sb.append(separator).append("{").append(entry.getKey()).append(", ").append(entry.getValue()).append("}");
+                sb.append(separator).append(entry.getKey()).append("=").append(entry.getValue());
                 separator = ", ";
             }
 
@@ -1077,11 +1077,11 @@ public class OAHashMap<K, V> implements Map<K, V> {
             if (itRevision != revision) {
                 throw new ConcurrentModificationException();
             }
-            
+
             if ((activeIndex < 0) || (activeIndex >= table.length)) {
                 throw new IllegalStateException();
             }
-            
+
             table[activeIndex] = DELETED;
             table[activeIndex + 1] = null;
             --size;
