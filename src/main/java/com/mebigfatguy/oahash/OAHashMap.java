@@ -784,14 +784,32 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public boolean retainAll(Collection<?> c) {
-            boolean modified = false;
 
-            for (Map.Entry<K, V> entry : entrySet()) {
-                if (!c.contains(entry)) {
-                    modified |= remove(entry.getKey());
+            if (c.isEmpty()) {
+                boolean wasEmpty = isEmpty();
+                OAHashMap.this.clear();
+                return !wasEmpty;
+            }
+
+            boolean modified = false;
+            for (int i = 0; i < table.length; i += 2) {
+                final K key = (K) table[i];
+
+                if ((key != null) && (key != DELETED)) {
+                    final V value = (V) table[i + 1];
+
+                    if (!c.contains(new OAMapEntry(revision, i))) {
+                        table[i] = DELETED;
+                        table[i + 1] = null;
+                        --size;
+                        modified = true;
+                    }
                 }
             }
 
+            if (modified) {
+                ++revision;
+            }
             return modified;
         }
 
@@ -1049,7 +1067,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
             }
 
             activeIndex = tableIndex;
-            return new OAMapEntry(tableIndex);
+            return new OAMapEntry(itRevision, tableIndex);
         }
 
         @Override
@@ -1091,64 +1109,66 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 tableIndex += 2;
             }
         }
+    }
 
-        private final class OAMapEntry implements Map.Entry<K, V> {
+    private final class OAMapEntry implements Map.Entry<K, V> {
 
-            private int entryIndex;
+        private int entryRevision;
+        private int entryIndex;
 
-            public OAMapEntry(int index) {
-                entryIndex = index;
+        public OAMapEntry(int revision, int index) {
+            entryRevision = revision;
+            entryIndex = index;
+        }
+
+        @Override
+        public K getKey() {
+            if (entryRevision != revision) {
+                throw new ConcurrentModificationException();
             }
 
-            @Override
-            public K getKey() {
-                if (itRevision != revision) {
-                    throw new ConcurrentModificationException();
-                }
+            return (K) table[entryIndex];
+        }
 
-                return (K) table[entryIndex];
+        @Override
+        public V getValue() {
+            if (entryRevision != revision) {
+                throw new ConcurrentModificationException();
             }
 
-            @Override
-            public V getValue() {
-                if (itRevision != revision) {
-                    throw new ConcurrentModificationException();
-                }
+            return (V) table[entryIndex + 1];
+        }
 
-                return (V) table[entryIndex + 1];
+        @Override
+        public V setValue(V value) {
+            if (entryRevision != revision) {
+                throw new ConcurrentModificationException();
             }
 
-            @Override
-            public V setValue(V value) {
-                if (itRevision != revision) {
-                    throw new ConcurrentModificationException();
-                }
+            V oldValue = (V) table[entryIndex + 1];
+            table[entryIndex + 1] = value;
+            return oldValue;
+        }
 
-                V oldValue = (V) table[entryIndex + 1];
-                table[entryIndex + 1] = value;
-                return oldValue;
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(table[entryIndex]) ^ Objects.hashCode(table[entryIndex + 1]);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Map.Entry)) {
+                return false;
             }
 
-            @Override
-            public int hashCode() {
-                return Objects.hashCode(table[entryIndex]) ^ Objects.hashCode(table[entryIndex + 1]);
-            }
+            Map.Entry that = (Map.Entry) o;
 
-            @Override
-            public boolean equals(Object o) {
-                if (!(o instanceof Map.Entry)) {
-                    return false;
-                }
+            return Objects.equals(table[entryIndex], that.getKey()) && Objects.equals(table[entryIndex + 1], that.getValue());
+        }
 
-                Map.Entry that = (Map.Entry) o;
-
-                return Objects.equals(table[entryIndex], that.getKey()) && Objects.equals(table[entryIndex + 1], that.getValue());
-            }
-
-            @Override
-            public String toString() {
-                return "[" + table[entryIndex] + "=" + table[entryIndex + 1] + "]";
-            }
+        @Override
+        public String toString() {
+            return "[" + table[entryIndex] + "=" + table[entryIndex + 1] + "]";
         }
     }
 }
