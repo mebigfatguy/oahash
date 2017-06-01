@@ -33,7 +33,7 @@ public class OAHashSetTest {
         s = new OAHashSet<>();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testPutNull() {
 
         s.add(null);
