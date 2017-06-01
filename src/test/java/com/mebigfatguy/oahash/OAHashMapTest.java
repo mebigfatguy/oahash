@@ -110,11 +110,11 @@ public class OAHashMapTest {
 
     @Test
     public void testHeavyHashCollisions() {
-        Map<HashCollisionsButNotEqual, HashCollisionsButNotEqual> hcm = new OAHashMap<>();
+        Map<HashCollisionsButNotEqual, Integer> hcm = new OAHashMap<>();
 
         for (int i = 0; i < 100; i++) {
             HashCollisionsButNotEqual hc = new HashCollisionsButNotEqual();
-            hcm.put(hc, hc);
+            hcm.put(hc, i);
         }
 
         Assert.assertEquals(100, hcm.size());
