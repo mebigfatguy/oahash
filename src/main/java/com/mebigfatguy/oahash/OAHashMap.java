@@ -356,7 +356,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         table = new Object[newLength];
 
         for (int i = 0; i < oldTable.length; i += 2) {
-            if ((oldTable[0] != null) && (oldTable[0] != DELETED)) {
+            if ((oldTable[i] != null) && (oldTable[i] != DELETED)) {
                 put((K) oldTable[i], (V) oldTable[i + 1]);
             }
         }
@@ -1046,11 +1046,11 @@ public class OAHashMap<K, V> implements Map<K, V> {
             if (itRevision != revision) {
                 throw new ConcurrentModificationException();
             }
-            
+
             if ((activeIndex < 0) || (activeIndex >= table.length)) {
                 throw new IllegalStateException();
             }
-            
+
             table[tableIndex] = DELETED;
             table[tableIndex + 1] = null;
             --size;
