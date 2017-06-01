@@ -33,7 +33,7 @@ public class OAHashMapTest {
         m = new OAHashMap<>();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testPutNull() {
 
         m.put(null, null);
