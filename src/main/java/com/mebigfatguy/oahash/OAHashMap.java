@@ -454,6 +454,8 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public boolean retainAll(Collection<?> c) {
+            ++revision;
+
             if (c.isEmpty()) {
                 boolean wasEmpty = isEmpty();
                 OAHashMap.this.clear();
@@ -475,9 +477,6 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 }
             }
 
-            if (modified) {
-                ++revision;
-            }
             return modified;
         }
 
@@ -612,8 +611,25 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public boolean remove(Object o) {
+            ++revision;
 
-            return false;
+            boolean modified = false;
+            for (int i = 0; i < table.length; i += 2) {
+                final K key = (K) table[i];
+
+                if ((key != null) && (key != DELETED)) {
+                    final V value = (V) table[i + 1];
+
+                    if (Objects.equals(value, o)) {
+                        table[i] = DELETED;
+                        table[i + 1] = null;
+                        --size;
+                        modified = true;
+                    }
+                }
+            }
+
+            return modified;
         }
 
         @Override
@@ -651,6 +667,9 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         @Override
         public boolean retainAll(Collection<?> c) {
+
+            ++revision;
+
             if (c.isEmpty()) {
                 boolean wasEmpty = isEmpty();
                 OAHashMap.this.clear();
@@ -673,9 +692,6 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 }
             }
 
-            if (modified) {
-                ++revision;
-            }
             return modified;
         }
 
@@ -812,6 +828,8 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean retainAll(Collection<?> c) {
 
+            ++revision;
+
             if (c.isEmpty()) {
                 boolean wasEmpty = isEmpty();
                 OAHashMap.this.clear();
@@ -834,9 +852,6 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 }
             }
 
-            if (modified) {
-                ++revision;
-            }
             return modified;
         }
 
@@ -1031,11 +1046,11 @@ public class OAHashMap<K, V> implements Map<K, V> {
             if (itRevision != revision) {
                 throw new ConcurrentModificationException();
             }
-
+            
             if ((activeIndex < 0) || (activeIndex >= table.length)) {
                 throw new IllegalStateException();
             }
-
+            
             table[tableIndex] = DELETED;
             table[tableIndex + 1] = null;
             --size;
