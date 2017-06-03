@@ -21,26 +21,21 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 public class OAHashMapTest {
 
-    private Map<String, String> m;
-
-    @Before
-    public void setUp() {
-        m = new OAHashMap<>();
-    }
-
     @Test(expected = NullPointerException.class)
     public void testPutNull() {
+        Map<String, String> m = new OAHashMap<>();
 
         m.put(null, null);
     }
 
     @Test
     public void testPutAndOverwrite() {
+        Map<String, String> m = new OAHashMap<>();
+
         Assert.assertSame(null, m.put("test", "tube"));
         Assert.assertEquals("tube", m.get("test"));
         Assert.assertEquals("tube", m.put("test", "exam"));
@@ -49,6 +44,8 @@ public class OAHashMapTest {
 
     @Test
     public void testFillWithoutExpansion() {
+        Map<String, String> m = new OAHashMap<>();
+
         for (int i = 0; i < 11; i++) {
             String s = String.valueOf(i);
             m.put(s, s);
@@ -62,6 +59,8 @@ public class OAHashMapTest {
 
     @Test
     public void testFillWithExpansion() {
+        Map<String, String> m = new OAHashMap<>();
+
         for (int i = 0; i < 100; i++) {
             String s = String.valueOf(i);
             m.put(s, s);
@@ -75,6 +74,8 @@ public class OAHashMapTest {
 
     @Test
     public void testKeySetIteratorEqualsEntrySetIterator() {
+        Map<String, String> m = new OAHashMap<>();
+
         for (int i = 0; i < 100; i++) {
             String s = String.valueOf(i);
             m.put(s, s);
@@ -97,6 +98,8 @@ public class OAHashMapTest {
 
     @Test
     public void testContains() {
+        Map<String, String> m = new OAHashMap<>();
+
         for (int i = 0; i < 100; i++) {
             String s = String.valueOf(i);
             m.put(s, s);
@@ -110,6 +113,8 @@ public class OAHashMapTest {
 
     @Test
     public void testHeavyHashCollisions() {
+        Map<String, String> m = new OAHashMap<>();
+
         Map<HashCollisionsButNotEqual, Integer> hcm = new OAHashMap<>();
 
         for (int i = 0; i < 100; i++) {

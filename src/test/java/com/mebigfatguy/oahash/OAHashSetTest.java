@@ -22,31 +22,26 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 public class OAHashSetTest {
-    private Set<String> s;
-
-    @Before
-    public void setUp() {
-        s = new OAHashSet<>();
-    }
 
     @Test(expected = NullPointerException.class)
     public void testPutNull() {
-
+        Set<String> s = new OAHashSet<>();
         s.add(null);
     }
 
     @Test
     public void testAddAndOverwrite() {
+        Set<String> s = new OAHashSet<>();
         Assert.assertTrue(s.add("test"));
         Assert.assertFalse(s.add("test"));
     }
 
     @Test
     public void testFillWithoutExpansion() {
+        Set<String> s = new OAHashSet<>();
         for (int i = 0; i < 11; i++) {
             String o = String.valueOf(i);
             s.add(o);
@@ -60,6 +55,7 @@ public class OAHashSetTest {
 
     @Test
     public void testFillWithExpansion() {
+        Set<String> s = new OAHashSet<>();
         for (int i = 0; i < 100; i++) {
             String o = String.valueOf(i);
             s.add(o);
@@ -73,6 +69,7 @@ public class OAHashSetTest {
 
     @Test
     public void testHeavyHashCollisions() {
+        Set<String> s = new OAHashSet<>();
         Set<HashCollisionsButNotEqual> hcs = new OAHashSet<>();
 
         for (int i = 0; i < 100; i++) {
@@ -85,6 +82,7 @@ public class OAHashSetTest {
 
     @Test
     public void testCountingAndDeletingIterator() {
+        Set<String> s = new OAHashSet<>();
         for (int i = 0; i < 20; i++) {
             s.add(String.valueOf(i));
         }
@@ -109,6 +107,7 @@ public class OAHashSetTest {
 
     @Test(expected = ConcurrentModificationException.class)
     public void testCMEIterator() {
+        Set<String> s = new OAHashSet<>();
         for (int i = 0; i < 20; i++) {
             s.add(String.valueOf(i));
         }
