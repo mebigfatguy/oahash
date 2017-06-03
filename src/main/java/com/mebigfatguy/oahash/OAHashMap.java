@@ -202,27 +202,8 @@ public class OAHashMap<K, V> implements Map<K, V> {
             return null;
         }
 
-        int start = (key.hashCode() % (table.length >> 1)) << 1;
-
-        for (int i = start; i < table.length; i += 2) {
-            if ((table[i] == null) || (table[i] == DELETED)) {
-                table[i++] = key;
-                table[i] = value;
-                ++size;
-                return null;
-            }
-        }
-
-        for (int i = 0; i < start; i += 2) {
-            if ((table[i] == null) || (table[i] == DELETED)) {
-                table[i++] = key;
-                table[i] = value;
-                ++size;
-                return null;
-            }
-        }
-
-        throw new RuntimeException("Unable to insert key value pair {" + key + ", " + value + "}");
+        putInternal(key, value);
+        return null;
     }
 
     @Override
@@ -357,11 +338,36 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         for (int i = 0; i < oldTable.length; i += 2) {
             if ((oldTable[i] != null) && (oldTable[i] != DELETED)) {
-                put((K) oldTable[i], (V) oldTable[i + 1]);
+                putInternal((K) oldTable[i], (V) oldTable[i + 1]);
             }
         }
 
         return true;
+    }
+
+    private void putInternal(K key, V value) {
+
+        int start = (key.hashCode() % (table.length >> 1)) << 1;
+
+        for (int i = start; i < table.length; i += 2) {
+            if ((table[i] == null) || (table[i] == DELETED)) {
+                table[i++] = key;
+                table[i] = value;
+                ++size;
+                return;
+            }
+        }
+
+        for (int i = 0; i < start; i += 2) {
+            if ((table[i] == null) || (table[i] == DELETED)) {
+                table[i++] = key;
+                table[i] = value;
+                ++size;
+                return;
+            }
+        }
+
+        throw new RuntimeException("Unable to insert key value pair {" + key + ", " + value + "}");
     }
 
     private final class OAKeySet implements Set<K> {
@@ -1046,11 +1052,11 @@ public class OAHashMap<K, V> implements Map<K, V> {
             if (itRevision != revision) {
                 throw new ConcurrentModificationException();
             }
-
+            
             if ((activeIndex < 0) || (activeIndex >= table.length)) {
                 throw new IllegalStateException();
             }
-
+            
             table[tableIndex] = DELETED;
             table[tableIndex + 1] = null;
             --size;
