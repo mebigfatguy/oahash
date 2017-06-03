@@ -195,25 +195,8 @@ public class OAHashSet<E> implements Set<E> {
             return true;
         }
 
-        int start = e.hashCode() % table.length;
-
-        for (int i = start; i < table.length; i++) {
-            if ((table[i] == null) || (table[i] == DELETED)) {
-                table[i] = e;
-                ++size;
-                return true;
-            }
-        }
-
-        for (int i = 0; i < start; i++) {
-            if ((table[i] == null) || (table[i] == DELETED)) {
-                table[i] = e;
-                ++size;
-                return true;
-            }
-        }
-
-        throw new RuntimeException("Unable to add element {" + e + "}");
+        addInternal(e);
+        return true;
     }
 
     @Override
@@ -354,11 +337,33 @@ public class OAHashSet<E> implements Set<E> {
 
         for (Object element : oldTable) {
             if ((element != null) && (element != DELETED)) {
-                add((E) element);
+                addInternal((E) element);
             }
         }
 
         return true;
+    }
+
+    private void addInternal(E e) {
+        int start = e.hashCode() % table.length;
+
+        for (int i = start; i < table.length; i++) {
+            if ((table[i] == null) || (table[i] == DELETED)) {
+                table[i] = e;
+                ++size;
+                return;
+            }
+        }
+
+        for (int i = 0; i < start; i++) {
+            if ((table[i] == null) || (table[i] == DELETED)) {
+                table[i] = e;
+                ++size;
+                return;
+            }
+        }
+
+        throw new RuntimeException("Unable to add element {" + e + "}");
     }
 
     private final class OAHashSetIterator implements Iterator<E> {
