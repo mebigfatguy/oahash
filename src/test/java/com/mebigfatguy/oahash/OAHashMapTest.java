@@ -61,12 +61,12 @@ public class OAHashMapTest {
     public void testFillWithExpansion() {
         Map<String, String> m = new OAHashMap<>();
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             String s = String.valueOf(i);
             m.put(s, s);
         }
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             String s = String.valueOf(i);
             Assert.assertEquals(s, m.get(s));
         }
