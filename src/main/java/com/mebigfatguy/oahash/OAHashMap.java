@@ -847,7 +847,6 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 final K key = (K) table[i];
 
                 if ((key != null) && (key != DELETED)) {
-                    final V value = (V) table[i + 1];
 
                     if (!c.contains(new OAMapEntry(revision, i))) {
                         table[i] = DELETED;
@@ -1052,11 +1051,11 @@ public class OAHashMap<K, V> implements Map<K, V> {
             if (itRevision != revision) {
                 throw new ConcurrentModificationException();
             }
-            
+
             if ((activeIndex < 0) || (activeIndex >= table.length)) {
                 throw new IllegalStateException();
             }
-            
+
             table[tableIndex] = DELETED;
             table[tableIndex + 1] = null;
             --size;
