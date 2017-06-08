@@ -200,7 +200,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
             return oldValue;
         }
 
-        if (!resizeIfNeeded()) {
+        if (!resizeIfNeeded(1)) {
             foundIndex = -1 - foundIndex;
             table[foundIndex++] = key;
             table[foundIndex] = value;
@@ -230,6 +230,14 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
+        ++revision;
+
+        if (m.isEmpty()) {
+            return;
+        }
+
+        resizeIfNeeded(m.size());
+
         for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
@@ -320,17 +328,17 @@ public class OAHashMap<K, V> implements Map<K, V> {
         return Integer.MIN_VALUE;
     }
 
-    private boolean resizeIfNeeded() {
+    private boolean resizeIfNeeded(int expectedAdditionalItems) {
 
         int slotCount = table.length >> 1;
-        double fillPercentage = 1.0 - ((slotCount - size) / ((double) slotCount));
+        double fillPercentage = 1.0 - ((slotCount - (size + expectedAdditionalItems)) / ((double) slotCount));
 
         if ((fillPercentage < loadFactor) && (table.length > size)) {
             return false;
         }
 
         int newLength;
-        int proposedLength = ((int) (slotCount + (slotCount * loadFactor))) << 1;
+        int proposedLength = ((int) (slotCount + expectedAdditionalItems + (slotCount * loadFactor))) << 1;
         int minNewSize = table.length + MIN_EXPANSION;
         if (proposedLength <= minNewSize) {
             newLength = minNewSize;
@@ -1057,11 +1065,11 @@ public class OAHashMap<K, V> implements Map<K, V> {
             if (itRevision != revision) {
                 throw new ConcurrentModificationException();
             }
-
+            
             if ((activeIndex < 0) || (activeIndex >= table.length)) {
                 throw new IllegalStateException();
             }
-
+            
             table[tableIndex] = DELETED;
             table[tableIndex + 1] = null;
             --size;

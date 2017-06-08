@@ -188,7 +188,7 @@ public class OAHashSet<E> implements Set<E> {
             return false;
         }
 
-        if (!resizeIfNeeded()) {
+        if (!resizeIfNeeded(1)) {
             foundIndex = -1 - foundIndex;
             table[foundIndex] = e;
             ++size;
@@ -227,6 +227,14 @@ public class OAHashSet<E> implements Set<E> {
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
+
+        ++revision;
+
+        if (c.isEmpty()) {
+            return false;
+        }
+
+        resizeIfNeeded(c.size());
 
         boolean modified = false;
         for (E e : c) {
@@ -318,15 +326,15 @@ public class OAHashSet<E> implements Set<E> {
         return Integer.MIN_VALUE;
     }
 
-    private boolean resizeIfNeeded() {
+    private boolean resizeIfNeeded(int expectedAdditionalItems) {
 
-        double fillPercentage = 1.0 - ((table.length - size) / ((double) table.length));
+        double fillPercentage = 1.0 - ((table.length - (size + expectedAdditionalItems)) / ((double) table.length));
 
         if ((fillPercentage < loadFactor) && (table.length > size)) {
             return false;
         }
 
-        int newLength = (int) (table.length + (table.length * loadFactor));
+        int newLength = (int) (table.length + expectedAdditionalItems + (table.length * loadFactor));
         if (newLength <= (table.length + MIN_EXPANSION)) {
             newLength += MIN_EXPANSION;
         }

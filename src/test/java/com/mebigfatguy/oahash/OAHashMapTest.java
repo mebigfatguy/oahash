@@ -112,6 +112,23 @@ public class OAHashMapTest {
     }
 
     @Test
+    public void testPutAll() {
+
+        Map<String, String> dest = new OAHashMap<>();
+
+        for (int i = 0; i < 10; i++) {
+            Map<String, String> src = new OAHashMap<>();
+            for (int j = 0; j < 100; j++) {
+                src.put(i + "-" + j, i + "-" + j);
+            }
+
+            dest.putAll(src);
+        }
+
+        Assert.assertEquals(1000, dest.size());
+    }
+
+    @Test
     public void testHeavyHashCollisions() {
         Map<String, String> m = new OAHashMap<>();
 

@@ -68,6 +68,23 @@ public class OAHashSetTest {
     }
 
     @Test
+    public void testAddAll() {
+
+        Set<String> dest = new OAHashSet<>();
+
+        for (int i = 0; i < 10; i++) {
+            Set<String> src = new OAHashSet<>();
+            for (int j = 0; j < 100; j++) {
+                src.add(i + "-" + j);
+            }
+
+            dest.addAll(src);
+        }
+
+        Assert.assertEquals(1000, dest.size());
+    }
+
+    @Test
     public void testHeavyHashCollisions() {
         Set<String> s = new OAHashSet<>();
         Set<HashCollisionsButNotEqual> hcs = new OAHashSet<>();
