@@ -114,8 +114,14 @@ public class OAHashMap<K, V> implements Map<K, V> {
     @Override
     public int hashCode() {
         int hashCode = 0;
-        for (Map.Entry<K, V> entry : entrySet()) {
-            hashCode += Objects.hashCode(entry.getKey()) ^ Objects.hashCode(entry.getValue());
+
+        for (int i = 0; i < table.length; i += 2) {
+            K key = (K) table[i];
+            if ((key != null) && (key != DELETED)) {
+                V value = (V) table[i + 1];
+
+                hashCode += Objects.hashCode(key) ^ Objects.hashCode(value);
+            }
         }
 
         return hashCode;
