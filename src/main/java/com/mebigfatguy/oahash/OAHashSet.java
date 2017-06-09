@@ -176,11 +176,12 @@ public class OAHashSet<E> implements Set<E> {
     @Override
     public boolean add(E e) {
 
+        ++revision;
+
         if (e == null) {
             throw new NullPointerException("add of null value is not allowed");
         }
 
-        ++revision;
         int foundIndex = find(e);
         if (foundIndex >= 0) {
             table[foundIndex] = e;

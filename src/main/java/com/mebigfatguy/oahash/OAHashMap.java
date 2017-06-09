@@ -186,11 +186,12 @@ public class OAHashMap<K, V> implements Map<K, V> {
     @Override
     public V put(K key, V value) {
 
+        ++revision;
+
         if (key == null) {
             throw new NullPointerException("put of null key is not allowed {null, " + value + ")");
         }
 
-        ++revision;
         int foundIndex = find(key);
         if (foundIndex >= 0) {
             int valueIndex = foundIndex + 1;
@@ -1065,11 +1066,11 @@ public class OAHashMap<K, V> implements Map<K, V> {
             if (itRevision != revision) {
                 throw new ConcurrentModificationException();
             }
-            
+
             if ((activeIndex < 0) || (activeIndex >= table.length)) {
                 throw new IllegalStateException();
             }
-            
+
             table[tableIndex] = DELETED;
             table[tableIndex + 1] = null;
             --size;
