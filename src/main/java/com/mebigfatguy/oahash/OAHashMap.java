@@ -75,7 +75,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
         }
 
         for (Map.Entry<K, V> entry : source.entrySet()) {
-            put(entry.getKey(), entry.getValue());
+            putInternal(entry.getKey(), entry.getValue());
         }
     }
 
@@ -1066,11 +1066,11 @@ public class OAHashMap<K, V> implements Map<K, V> {
             if (itRevision != revision) {
                 throw new ConcurrentModificationException();
             }
-
+            
             if ((activeIndex < 0) || (activeIndex >= table.length)) {
                 throw new IllegalStateException();
             }
-
+            
             table[tableIndex] = DELETED;
             table[tableIndex + 1] = null;
             --size;

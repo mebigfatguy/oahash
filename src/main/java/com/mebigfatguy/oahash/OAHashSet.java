@@ -73,7 +73,7 @@ public class OAHashSet<E> implements Set<E> {
         }
 
         for (E e : source) {
-            add(e);
+            addInternal(e);
         }
     }
 
