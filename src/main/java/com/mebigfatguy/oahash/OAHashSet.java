@@ -85,7 +85,7 @@ public class OAHashSet<E> implements Set<E> {
         }
 
         for (E e : source) {
-            add(e);
+            addInternal(e);
         }
     }
 
@@ -354,6 +354,11 @@ public class OAHashSet<E> implements Set<E> {
     }
 
     private void addInternal(E e) {
+
+        if (e == null) {
+            throw new NullPointerException("add of null value is not allowed");
+        }
+
         int start = e.hashCode() % table.length;
 
         for (int i = start; i < table.length; i++) {

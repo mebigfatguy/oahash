@@ -362,6 +362,10 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
     private void putInternal(K key, V value) {
 
+        if (key == null) {
+            throw new NullPointerException("put of null key is not allowed {null, " + value + ")");
+        }
+
         int start = (key.hashCode() % (table.length >> 1)) << 1;
 
         for (int i = start; i < table.length; i += 2) {
@@ -1066,11 +1070,11 @@ public class OAHashMap<K, V> implements Map<K, V> {
             if (itRevision != revision) {
                 throw new ConcurrentModificationException();
             }
-            
+
             if ((activeIndex < 0) || (activeIndex >= table.length)) {
                 throw new IllegalStateException();
             }
-            
+
             table[tableIndex] = DELETED;
             table[tableIndex + 1] = null;
             --size;
