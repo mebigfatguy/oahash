@@ -1070,11 +1070,11 @@ public class OAHashMap<K, V> implements Map<K, V> {
             if (itRevision != revision) {
                 throw new ConcurrentModificationException();
             }
-
+            
             if ((activeIndex < 0) || (activeIndex >= table.length)) {
                 throw new IllegalStateException();
             }
-
+            
             table[tableIndex] = DELETED;
             table[tableIndex + 1] = null;
             --size;
@@ -1168,26 +1168,6 @@ public class OAHashMap<K, V> implements Map<K, V> {
         @Override
         public void remove() {
             throw new UnsupportedOperationException("remove");
-        }
-
-        private void removeInternal() {
-            if (itRevision != revision) {
-                throw new ConcurrentModificationException();
-            }
-
-            if ((activeIndex < 0) || (activeIndex >= table.length)) {
-                throw new IllegalStateException();
-            }
-
-            table[activeIndex] = DELETED;
-            table[activeIndex + 1] = null;
-            --size;
-            tableIndex = activeIndex - 2;
-            activeIndex = -2;
-            primed = false;
-            ++itRevision;
-            ++revision;
-            findNextSlot();
         }
 
         private void findNextSlot() {
