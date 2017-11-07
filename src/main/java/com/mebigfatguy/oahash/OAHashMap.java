@@ -1128,12 +1128,10 @@ public class OAHashMap<K, V> implements Map<K, V> {
 
         private int itRevision = revision;
         private int tableIndex;
-        private int activeIndex;
         private boolean primed;
 
         public OAHashMapEntrySetIterator() {
             tableIndex = -2;
-            activeIndex = -2;
             primed = false;
         }
 
@@ -1161,7 +1159,6 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 throw new NoSuchElementException();
             }
 
-            activeIndex = tableIndex;
             return new OAMapEntry(itRevision, tableIndex);
         }
 
