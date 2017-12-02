@@ -130,8 +130,6 @@ public class OAHashMapTest {
 
     @Test
     public void testHeavyHashCollisions() {
-        Map<String, String> m = new OAHashMap<>();
-
         Map<HashCollisionsButNotEqual, Integer> hcm = new OAHashMap<>();
 
         for (int i = 0; i < 100; i++) {
