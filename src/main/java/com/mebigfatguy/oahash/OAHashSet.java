@@ -66,7 +66,7 @@ public class OAHashSet<E> implements Set<E> {
     }
 
     public OAHashSet(Set<E> source) {
-        this((source == null) ? DEFAULT_CAPACITY : source.size() * (source.size() * DEFAULT_CAPACITY));
+        this((source == null) ? DEFAULT_CAPACITY : (int) (source.size() / DEFAULT_LOAD_FACTOR));
 
         if (source == null) {
             return;

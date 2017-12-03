@@ -68,7 +68,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
     }
 
     public OAHashMap(Map<K, V> source) {
-        this((source == null) ? DEFAULT_CAPACITY : source.size() * (source.size() * DEFAULT_CAPACITY));
+        this((source == null) ? DEFAULT_CAPACITY : (int) (source.size() / DEFAULT_LOAD_FACTOR));
 
         if (source == null) {
             return;
