@@ -59,8 +59,8 @@ public class OAHashMap<K, V> implements Map<K, V> {
             throw new IllegalArgumentException("Initial capacity can not be negative but was " + initialCapacity);
         }
 
-        if ((initialLoadFactor <= 0) || (initialLoadFactor >= 100)) {
-            throw new IllegalArgumentException("Initial Load Factor must be between 0 and 100 exclusively, but was " + initialLoadFactor);
+        if ((initialLoadFactor <= 0) || (initialLoadFactor >= 1)) {
+            throw new IllegalArgumentException("Initial Load Factor must be between 0 and 1 exclusively, but was " + initialLoadFactor);
         }
 
         table = new Object[initialCapacity * 2];
@@ -1070,11 +1070,11 @@ public class OAHashMap<K, V> implements Map<K, V> {
             if (itRevision != revision) {
                 throw new ConcurrentModificationException();
             }
-            
+
             if ((activeIndex < 0) || (activeIndex >= table.length)) {
                 throw new IllegalStateException();
             }
-            
+
             table[tableIndex] = DELETED;
             table[tableIndex + 1] = null;
             --size;

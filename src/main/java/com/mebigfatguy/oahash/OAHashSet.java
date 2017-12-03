@@ -57,8 +57,8 @@ public class OAHashSet<E> implements Set<E> {
             throw new IllegalArgumentException("Initial capacity can not be negative but was " + initialCapacity);
         }
 
-        if ((initialLoadFactor <= 0) || (initialLoadFactor >= 100)) {
-            throw new IllegalArgumentException("Initial Load Factor must be between 0 and 100 exclusively, but was " + initialLoadFactor);
+        if ((initialLoadFactor <= 0) || (initialLoadFactor >= 1)) {
+            throw new IllegalArgumentException("Initial Load Factor must be between 0 and 1 exclusively, but was " + initialLoadFactor);
         }
 
         table = new Object[initialCapacity];
