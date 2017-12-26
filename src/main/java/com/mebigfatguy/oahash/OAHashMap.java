@@ -830,8 +830,8 @@ public class OAHashMap<K, V> implements Map<K, V> {
         public boolean containsAll(Collection<?> c) {
 
             for (Object e : c) {
-                K k = (K) ((Map.Entry) e).getKey();
-                V v = (V) ((Map.Entry) e).getValue();
+                K k = ((Map.Entry<K, V>) e).getKey();
+                V v = ((Map.Entry<K, V>) e).getValue();
 
                 if (!containsKey(k)) {
                     return false;
@@ -1234,7 +1234,7 @@ public class OAHashMap<K, V> implements Map<K, V> {
                 return false;
             }
 
-            Map.Entry that = (Map.Entry) o;
+            Map.Entry<K, V> that = (Map.Entry<K, V>) o;
 
             return Objects.equals(table[entryIndex], that.getKey()) && Objects.equals(table[entryIndex + 1], that.getValue());
         }
